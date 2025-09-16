@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="icon" href="Icon.png" type="image/x-icon" />
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+:root {
+  --blue: #3341ff;
+  --dark-blue: #2965e6;
+  --card: #ffffff;
+  --pink: #5833ff;
+  --light-bg: #fafafb;
+}
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid transparent;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #411b6f, #03394c, #22055a, #145e73);
+  background-size: 400% 400%;
+  animation: grad 12s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+@keyframes grad {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.card {
+  width: min(900px, 95vw);
+  background: var(--card);
+  color: #111;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0,0,0,.2);
+  padding: 28px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.card:hover { transform: translateY(-5px); }
+h1 { margin: 0 0 4px; font-size: 2rem; }
+.sub { color: #666; margin-top: 0; }
+.grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+.panel {
+  background: var(--light-bg);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #eaeaea;
+}
+.panel h3 { margin-top: 0; margin-bottom: 12px; font-size: 1.2rem; color: #333; }
+.row { display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin: 10px 0; align-items: center; }
+.row input, .row select { width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; }
+.tag { display: inline-block; padding: 6px 12px; background: #ffe6f0; border-radius: 999px; margin: 4px 6px 0 0; font-size: 13px; color: #ff3399; font-weight: 600; }
+.btn { border: none; border-radius: 12px; padding: 10px 16px; background: var(--pink); color: #fff; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.btn:hover { background: #2e56e6; }
+.btnGhost { background: #fff; border: 1px solid #ddd; color: #333; font-weight: 600; }
+.btnGhost:hover { background: #f5f5f5; }
+ul { list-style: none; padding: 0; margin: 0; }
+li {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  background: #fff;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: 0.2s;
+}
+li.active { border-color: var(--pink); background: #c1e4f5; }
+li:hover { background: #f9f9f9; }
+.muted { font-size: 12px; color: #888; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkleAnim 1.5s linear infinite;
+}
+@keyframes sparkleAnim {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-10px) scale(1.3); opacity: 0.7; }
+  100% { transform: translateY(0px) scale(1); }
+}
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr } }
+
+/* Mobile-friendly tweaks */
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .topbar h1 {
+    font-size: 1.5rem;
+  }
+
+  .profile-pic {
+    width: 90px;
+    height: 90px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .row strong {
+    font-size: 0.9rem;
+  }
+
+  .btn, .btnGhost {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h1 id="hello">
+  Hello, <script>
+    document.write(localStorage.getItem("currentUser") || "Guest");
+  </script>!
+</h1>
+
+      <p class="sub">Here are your saved details.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="addAccount">Add another account</button>
+      <button class="btnGhost" id="logout">Log out</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>Current Account</h3>
+      <div style="text-align:center; margin-bottom:16px; position:relative;">
+        <img id="profileImg" class="profile-pic" src="" alt="Profile Picture">
+        <input type="file" id="picInput" accept="image/*" style="margin-top:10px;">
+      </div>
+      <div class="row"><strong>Username</strong><input id="dUsername" type="text"></div>
+      <div class="row"><strong>Age</strong><input id="dAge" type="number"></div>
+      <div class="row"><strong>Gender</strong>
+        <select id="dGender">
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="row"><strong>Phone Number</strong><input id="dPhone" type="number" placeholder="+94 0760621450"></div>
+
+      <div class="row"><strong>Country</strong><input id="dCountry" type="text"></div>
+
+      
+      <div class="row"><strong>Qualifications</strong><input id="dQuals" type="text" placeholder="Comma-separated"></div>
+      <!-- New fields -->
+<div class="row"><strong>LinkedIn Profile</strong><input id="dLinkedin" type="text" placeholder="https://linkedin.com/in/..."></div>
+<div class="row"><strong>Gmail</strong><input id="dGmail" type="email" placeholder="example@gmail.com"></div>
+<div class="row"><strong>Address</strong><input id="dAddress" type="text" placeholder="Your address here"></div>
+<div class="row"><strong>Brief Self Introduction</strong>
+  <textarea id="dIntro" rows="3" placeholder="Tell us about yourself"></textarea>
+</div>
+      <div class="row"><strong>Created</strong><div id="dCreated">—</div></div>
+      <div style="margin-top:12px;">
+        <button class="btn" id="saveBtn">Save Updates</button>
+        <button class="btnGhost" id="deleteBtn">Delete Account</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Your Accounts</h3>
+      <p class="muted">Switch between accounts or remove one.</p>
+      <ul id="list"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// Sparkles effect
+(function makeStars(n=16){
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div');
+    s.className='sparkle';
+    s.style.top=Math.random()*100+'%';
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDelay=(Math.random()*3)+'s';
+    document.body.appendChild(s);
+  }
+})();
+
+// LocalStorage keys
+const LS_ACCOUNTS_KEY='accounts';
+const LS_CURRENT_KEY='currentUser';
+
+function getAccounts(){ try{return JSON.parse(localStorage.getItem(LS_ACCOUNTS_KEY))||[]}catch(e){return []} }
+function setAccounts(v){ localStorage.setItem(LS_ACCOUNTS_KEY, JSON.stringify(v)); }
+function getCurrent(){ return localStorage.getItem(LS_CURRENT_KEY); }
+function setCurrent(u){ localStorage.setItem(LS_CURRENT_KEY,u); }
+
+// Load accounts
+const accounts = getAccounts();
+const current = getCurrent();
+if(!current || !accounts.length){ location.href='index.html'; }
+const meIndex = accounts.findIndex(a=>a.username===current);
+if(meIndex<0){ location.href='index.html'; }
+const me = accounts[meIndex];
+
+// Load into fields
+document.getElementById("hello").value = `Hello, ${me.username}!`;
+document.getElementById("dUsername").value = me.username;
+document.getElementById("dAge").value = me.age;
+document.getElementById("dGender").value = me.gender;
+document.getElementById('dPhone').value= me.phone || "";
+document.getElementById("dCountry").value = me.country;
+document.getElementById("dQuals").value = (me.qualifications || []).join(", ");
+document.getElementById("dLinkedin").value = me.linkedin || "";
+document.getElementById("dGmail").value = me.gmail || "";
+document.getElementById("dAddress").value = me.address || "";
+document.getElementById("dIntro").value = me.intro || "";
+document.getElementById("dCreated").textContent = new Date(me.createdAt).toLocaleString();
+
+if(me.picture){
+  document.getElementById('profileImg').src = me.picture;
+}
+
+// Refresh account list
+function refreshList(){
+  const list = document.getElementById('list');
+  list.innerHTML='';
+  accounts.forEach(acc=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<span>${acc.username}</span>`;
+    if(acc.username === current) li.classList.add('active');
+    const actions=document.createElement('div');
+    actions.className='actions';
+    const btnSwitch=document.createElement('button');
+    btnSwitch.textContent='Switch';
+    btnSwitch.className='btnGhost';
+    btnSwitch.onclick=()=>{ setCurrent(acc.username); location.reload(); };
+    const btnDel=document.createElement('button');
+    btnDel.textContent='Delete';
+    btnDel.className='btnGhost';
+    btnDel.onclick=()=>{
+      if(acc.username===me.username){ alert("Cannot delete current account here."); return; }
+      const idx=accounts.findIndex(a=>a.username===acc.username);
+      accounts.splice(idx,1); setAccounts(accounts); refreshList();
+    };
+    actions.appendChild(btnSwitch); actions.appendChild(btnDel);
+    li.appendChild(actions);
+    list.appendChild(li);
+  });
+}
+refreshList();
+
+// Profile picture upload
+document.getElementById('picInput').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ me.picture=reader.result; document.getElementById('profileImg').src=reader.result; accounts[meIndex]=me; setAccounts(accounts); };
+  reader.readAsDataURL(file);
+});
+
+// Save updates
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const picInput = document.getElementById('picInput').files[0]; // get the file
+  const updateAccount = () => {
+    me.username = document.getElementById('dUsername').value.trim();
+    me.age = document.getElementById('dAge').value;
+    me.gender = document.getElementById('dGender').value;
+    me.phone = document.getElementById('dPhone').value.trim();
+    me.country = document.getElementById('dCountry').value.trim();
+    me.qualifications = document.getElementById('dQuals').value.split(',').map(s => s.trim()).filter(s => s);
+    me.linkedin = document.getElementById('dLinkedin').value.trim();
+    me.gmail = document.getElementById('dGmail').value.trim();
+    me.address = document.getElementById('dAddress').value.trim();
+    me.intro = document.getElementById('dIntro').value.trim();
+
+    accounts[meIndex] = me;
+    setAccounts(accounts);
+    setCurrent(me.username);
+    alert('Account updated successfully!');
+    location.reload();
+  };
+
+  if (picInput) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      me.picture = reader.result; // save image as Base64
+      updateAccount(); // then update all other info
+    };
+    reader.readAsDataURL(picInput);
+  } else {
+    updateAccount(); // no image selected, just update the rest
+  }
+});
+
+// Delete account
+document.getElementById('deleteBtn').addEventListener('click', ()=>{
+  if(!confirm('Are you sure you want to delete this account?')) return;
+  accounts.splice(meIndex,1);
+  setAccounts(accounts);
+  localStorage.removeItem(LS_CURRENT_KEY);
+  location.href='index.html';
+});
+
+// Logout
+document.getElementById('logout').addEventListener('click', ()=>{
+  localStorage.removeItem(LS_CURRENT_KEY);
+  location.href='index.html';
+});
+
+// Add another account
+document.getElementById('addAccount').onclick=()=>{ location.href='sign in.html?mode=register'; };
+
+</script>
+
+</body>
+</html> 
