@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="x-UA-compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jannet Fashion - Checkout</title>
+  <link rel="icon" href="Icon.png" type="image/x-icon" sizes="32x32" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ----- Basic Reset and Typography ----- */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #f8faff 0%, #e0f0ff 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      max-width: 900px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 123, 255, 0.2);
+      padding: 30px 40px;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .back li {
+      list-style: none;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .back li a {
+      color: #333;
+      transition: color 0.3s;
+    }
+
+    .back li a:hover {
+      color: #041e42;
+    }
+
+    .row {
+      display: flex;
+      width: 100%;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      flex: 1 1 400px;
+    }
+
+    h3.title {
+      font-weight: 700;
+      color: #041e42;
+      margin-bottom: 25px;
+      border-bottom: 3px solid#041e42;
+      padding-bottom: 8px;
+      font-size: 1.6rem;
+    }
+
+    .input-box {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .input-box span {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus {
+      border-color: #041e42
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+      outline: none;
+    }
+
+    .flex {
+      display: flex;
+      gap: 20px;
+    }
+
+    .flex .input-box {
+      flex: 1;
+    }
+
+    img {
+      border-radius: 8px;
+      margin-top: 5px;
+      user-select: none;
+    }
+
+    /* Buttons */
+    button.btn1,
+    button.btn2 {
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.4s, box-shadow 0.3s;
+      margin-right: 20px;
+      min-width: 130px;
+    }
+
+    button.btn1 {
+      background: #eee;
+      color: #041e42;
+      border: 2px solid #041e42;
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    }
+
+    button.btn1:hover {
+      background: #041e42;
+      color: white;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.5);
+    }
+
+    button.btn2 {
+      background: #041e42;
+      color: white;
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
+    }
+
+    button.btn2:hover {
+      background: #041e42;
+      box-shadow: 0 10px 30px rgba(0, 86, 179, 0.8);
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      form {
+        flex-direction: column;
+      }
+      .row {
+        flex-direction: column;
+      }
+      .flex {
+        flex-direction: column;
+      }
+      button.btn1,
+      button.btn2 {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form id="checkoutForm" action="">
+      <div class="back">
+        <li>
+          <a href="payment.html"><i class="fas fa-times-circle"></i></a>
+        </li>
+      </div>
+      <div class="row">
+        <div class="column">
+          <h3 class="title">Shipping Address</h3>
+          <div class="input-box">
+            <span>Full Name :</span>
+            <input type="text" id="fullName" placeholder="Jacob Aiden" />
+          </div>
+          <div class="input-box">
+            <span>Email :</span>
+            <input type="email" id="userEmail" placeholder="example@example.com" />
+          </div>
+          <div class="input-box">
+            <span>Address :</span>
+            <input type="text" id="address" placeholder="Street, House/Apartment/Unit" />
+          </div>
+          <div class="input-box">
+            <span>City :</span>
+            <input type="text" id="city" placeholder="Colombo" />
+          </div>
+          <div class="flex">
+            <div class="input-box">
+              <span>Zip code :</span>
+              <input type="number" id="zipCode" placeholder="20000" />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <h3 class="title">Payment</h3>
+          <div class="input-box">
+            <span>Card Accepted :</span>
+           <img src="visa.png" width="90" height="50" Card Logos/>
+          </div>
+          <div class="input-box">
+            <span>Card Holder Name :</span>
+            <input type="text" id="cardHolder" placeholder="M. Jacob Aiden" />
+          </div>
+          <div class="input-box">
+            <span>Debit card number :</span>
+            <input type="number" id="cardNumber" placeholder="1000 2000 3000 8888" />
+          </div>
+          <div class="input-box">
+            <span>Exp. Month :</span>
+            <input type="text" id="expMonth" placeholder="January" />
+          </div>
+          <div class="flex">
+            <div class="input-box">
+              <span>Exp. Year :</span>
+              <input type="number" id="expYear" placeholder="2024" />
+            </div>
+            <div class="input-box">
+              <span>CVV :</span>
+              <input type="number" id="cvv" placeholder="123" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn1">Save Details</button>
+      <button type="submit" class="btn2">Place Order</button>
+    </form>
+  </div>
+
+  <script>
+    // Load saved data from localStorage
+    function loadFormData() {
+      const data = JSON.parse(localStorage.getItem("paymentFormData"));
+      if (data) {
+        document.getElementById("fullName").value = data.fullName || "";
+        document.getElementById("userEmail").value = data.userEmail || "";
+        document.getElementById("address").value = data.address || "";
+        document.getElementById("city").value = data.city || "";
+        document.getElementById("zipCode").value = data.zipCode || "";
+
+        document.getElementById("cardHolder").value = data.cardHolder || "";
+        document.getElementById("cardNumber").value = data.cardNumber || "";
+        document.getElementById("expMonth").value = data.expMonth || "";
+        document.getElementById("expYear").value = data.expYear || "";
+        document.getElementById("cvv").value = data.cvv || "";
+      }
+    }
+
+    // Save form data to localStorage
+    function saveFormData() {
+      const data = {
+        fullName: document.getElementById("fullName").value.trim(),
+        userEmail: document.getElementById("userEmail").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        zipCode: document.getElementById("zipCode").value.trim(),
+
+        cardHolder: document.getElementById("cardHolder").value.trim(),
+        cardNumber: document.getElementById("cardNumber").value.trim(),
+        expMonth: document.getElementById("expMonth").value.trim(),
+        expYear: document.getElementById("expYear").value.trim(),
+        cvv: document.getElementById("cvv").value.trim(),
+      };
+
+      localStorage.setItem("paymentFormData", JSON.stringify(data));
+      alert("Details saved!");
+    }
+
+    // Validate form fields (simple example)
+    function validateForm() {
+      const email = document.getElementById("userEmail").value.trim();
+      if (!email || !email.includes("@")) {
+        alert("Please enter a valid email address.");
+        return false;
+      }
+
+      if (
+        !document.getElementById("fullName").value.trim() ||
+        !document.getElementById("address").value.trim() ||
+        !document.getElementById("city").value.trim() ||
+        !document.getElementById("zipCode").value.trim() ||
+        !document.getElementById("cardHolder").value.trim() ||
+        !document.getElementById("cardNumber").value.trim() ||
+        !document.getElementById("expMonth").value.trim() ||
+        !document.getElementById("expYear").value.trim() ||
+        !document.getElementById("cvv").value.trim()
+      ) {
+        alert("Please fill all fields before placing the order.");
+        return false;
+      }
+      return true;
+    }
+
+    window.onload = loadFormData;
+
+    // Save button event
+    document.querySelector(".btn1").addEventListener("click", (e) => {
+      e.preventDefault();
+      saveFormData();
+    });
+
+    // Form submission event
+    document.getElementById("checkoutForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (!validateForm()) return;
+
+      saveFormData();
+
+      // You can replace this with actual order placement logic
+      alert("Order placed successfully!");
+      // Optionally clear form & localStorage here or redirect
+      // localStorage.removeItem("paymentFormData");
+      // window.location.href = "order-confirmation.html";
+    });
+  </script>
+</body>
+
+</html>
