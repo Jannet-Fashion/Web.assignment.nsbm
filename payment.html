@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="x-UA-compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jannet Fashion - Payment</title>
+  <link rel="icon" href="Icon.png" type="image/x-icon" sizes="32x32" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #f7f9fc, #e1e9f8);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .container {
+      background: #fff;
+      max-width: 900px;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      padding: 30px 40px;
+    }
+    .back {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .back a {
+      font-size: 1.8rem;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+    .back a:hover {
+      color: #041e42;
+    }
+    .row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .column {
+      flex: 1 1 400px;
+    }
+    h3.title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color:#041e42;
+      border-bottom: 3px solid#041e42;
+      padding-bottom: 6px;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+      position: relative;
+      animation: slideIn 0.8s ease forwards;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .input-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .input-box span {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #444;
+    }
+    .input-box input {
+      width: 100%;
+      padding: 12px 15px 12px 40px;
+      border-radius: 10px;
+      border: 1.8px solid #ddd;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+      font-family: "Inter", sans-serif;
+    }
+    .input-box input:focus {
+      border-color: #041e42;
+      box-shadow: 0 0 10px rgba(16, 36, 115, 0.4);
+    }
+    /* Icons inside inputs */
+    .input-box .icon {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #aaa;
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+    /* Payment card image */
+    .input-box img {
+      display: block;
+      max-width: 260px;
+      border-radius: 10px;
+      margin-top: 8px;
+      box-shadow: 0 4px 15px rgba(23, 21, 141, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .input-box img:hover {
+      transform: scale(1.05);
+    }
+    .flex {
+      display: flex;
+      gap: 20px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      background-color: #041e42;
+      border: none;
+      color: white;
+      padding: 15px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 25px;
+      box-shadow: 0 6px 15px rgba(12, 20, 170, 0.6);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-family: "Inter", sans-serif;
+    }
+    .btn:hover {
+      background-color:#041e42;
+      box-shadow: 0 8px 20px rgba(28, 11, 176, 0.7);
+    }
+    /* Responsive */
+    @media (max-width: 720px) {
+      .row {
+        flex-direction: column;
+      }
+      .flex {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form action="">
+      <div class="back">
+        <a href="index.html" aria-label="Close Payment Form"><i class="fas fa-times-circle"></i></a>
+      </div>
+      <div class="row">
+        <div class="column">
+          <h3 class="title">Shipping Address</h3>
+          <div class="input-box">
+            <span>Full Name :</span>
+            <i class="fas fa-user icon"></i>
+            <input type="text" placeholder="Jacob Aiden" />
+          </div>
+          <div class="input-box">
+            <span>Email :</span>
+            <i class="fas fa-envelope icon"></i>
+            <input id="userEmail" type="email" placeholder="example@example.com" />
+          </div>
+          <div class="input-box">
+            <span>Address :</span>
+            <i class="fas fa-map-marker-alt icon"></i>
+            <input type="text" placeholder="Street, House/Apartment/Unit" />
+          </div>
+          <div class="input-box">
+            <span>City :</span>
+            <i class="fas fa-city icon"></i>
+            <input type="text" placeholder="Colombo" />
+          </div>
+          <div class="flex">
+            <div class="input-box" style="flex: 1">
+              <span>Zip code :</span>
+              <i class="fas fa-mail-bulk icon"></i>
+              <input type="number" placeholder="20000" />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <h3 class="title">Payment</h3>
+          <div class="input-box">
+            <span>Card Accepted :</span>
+            <img src="visa.png" width="90" height="50" Card Logos />
+          </div>
+          <div class="input-box">
+            <span>Card Holder Name :</span>
+            <i class="fas fa-user-circle icon"></i>
+            <input type="text" placeholder="M. Jacob Aiden" />
+          </div>
+          <div class="input-box">
+            <span>Debit card number :</span>
+            <i class="fas fa-credit-card icon"></i>
+            <input type="text" maxlength="19" placeholder="1000 2000 3000 8888" />
+          </div>
+          <div class="input-box">
+            <span>Exp. Month :</span>
+            <i class="fas fa-calendar-alt icon"></i>
+            <input type="text" placeholder="January" />
+          </div>
+          <div class="flex">
+            <div class="input-box" style="flex: 1">
+              <span>Exp. Year :</span>
+              <i class="fas fa-calendar icon"></i>
+              <input type="number" placeholder="2024" />
+            </div>
+            <div class="input-box" style="flex: 1">
+              <span>CVV :</span>
+              <i class="fas fa-lock icon"></i>
+              <input type="number" maxlength="3" placeholder="123" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn" onclick="window.location.href='placeorder.html';">Save
+        Details</button>
+    </form>
+  </div>
+
+  <script>
+    // On page load, prefill email if stored
+    window.onload = function () {
+      const savedEmail = localStorage.getItem("userEmail");
+      if (savedEmail) {
+        document.getElementById("userEmail").value = savedEmail;
+      }
+    };
+  </script>
+</body>
+
+</html>
