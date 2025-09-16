@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign in to My Account</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="Icon.png" type="image/png">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+ :root{
+  --blue:#3341ff;
+  --dark-blue:#2965e6;
+  --card:#ffffff;
+}
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Poppins, Arial, sans-serif;
+    color:#fff;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    background: linear-gradient(135deg, #411b6f, #03394c, #22055a, #145e73);
+    background-size:300% 300%;
+    animation:grad 10s ease infinite;
+    overflow-y:auto;
+    overflow-x:hidden;
+    position:relative;
+}
+
+  @keyframes grad{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;
+  }
+  header nav a{color:#fff;text-decoration:none;margin:0 12px;font-weight:500;opacity:.95}
+  header nav a:hover{opacity:1}
+  .logo{font-weight:700}
+  .wrap{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    gap:28px;flex-wrap:wrap;padding:24px;
+  }
+  .left{min-width:260px;flex:1;text-align:right;font-size:40px;font-weight:800}
+  .right{min-width:260px;flex:1;text-align:left;font-size:22px}
+  .card{
+    width:min(360px,92vw);
+    background:var(--card);
+    color:#111;border-radius:18px;padding:24px 22px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    position:relative;z-index:2;
+  }
+  .tabs{display:flex;background:#f6f6f8;border-radius:12px;padding:4px;margin-bottom:16px}
+  .tab{flex:1;text-align:center;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+  .tab.active{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  label{display:block;font-size:13px;color:var(--blue);margin:10px 0 6px}
+  input[type="text"],input[type="number"],input[type="password"],select, .fake-input, textarea{
+    width:100%;padding:12px 12px;border-radius:10px;border:none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.08);
+    background:#fff;font-size:14px;outline:none;
+  }
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hint{font-size:12px;color:#555;margin-top:-6px;margin-bottom:10px}
+  .error{background:#ffe5ef;color:#a4003b;border-left:4px solid #a4003b;padding:10px 12px;border-radius:8px;margin:8px 0;display:none}
+  .notice{background:#fff6fb;color:#6b0341;border-left:4px solid var(--blue);padding:10px 12px;border-radius:8px;margin:-4px 0 10px;display:none}
+  .btn{
+    width:100%;padding:12px;border:none;border-radius:10px;cursor:pointer;
+    background:var(--blue);
+    color:#fff;font-weight:800;
+    letter-spacing:.5px;
+    font-size:15px;
+    box-shadow:0 6px 16px rgba(2, 20, 70, 0.35);transition:.2s;
+  }
+  .btn:hover{background:var(--dark-blue)}
+  .muted{font-size:12px;text-align:center;margin-top:12px}
+  .muted a{color:var(--blue);font-weight:700;text-decoration:none}
+  footer{text-align:center;padding:10px 0 18px;font-size:12px;opacity:.9;z-index:2}
+  /* Social buttons */
+  .social{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+  .sbtn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px;border-radius:10px;border:1px solid #e7e7ea;background:#fff;color:#111;font-weight:600;cursor:pointer;
+  }
+  .apple{font-weight:800}
+  .google{border-color:#e7e7ea}
+  .facebook{background:#1877f2;color:#fff;border:none}
+  .gender, .checks{display:flex;gap:12px;flex-wrap:wrap}
+  .checks label{color:#222;font-size:13px;margin:0}
+  .sparkle{position:absolute;width:6px;height:6px;background:#fff;border-radius:999px;opacity:.85;animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+  @media (max-width: 768px){
+    .left,.right{text-align:center}
+    .left{font-size:32px}
+    .right{font-size:18px}
+  }
+  @media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+  }
+  header nav {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .left, .right {
+    text-align: center;
+    font-size: 28px;
+  }
+  .wrap {
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+  }
+  .card {
+    width: 95%;
+    padding: 20px;
+  }
+  .row {
+    grid-template-columns: 1fr;
+  }
+  .gender, .checks {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .social {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<header style="display:flex;justify-content:space-between;align-items:center;padding:20px 50px;background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;">
+  <div class="logo" style="font-size:24px;font-weight:bold;color:white;">Jannet</div>
+  <nav>
+    <a href="index.html" style="color:white;text-decoration:none;margin-left:20px;font-weight:500;">Home</a>
+    <a href="about.html" style="color:white;text-decoration:none;margin-left:20px;font-weight:500;">Our Services</a>
+    <a href="about.html" style="color:white;text-decoration:none;margin-left:20px;font-weight:500;">About</a>
+    <a href="contact.html" style="color:white;text-decoration:none;margin-left:20px;font-weight:500;">Contact</a>
+    <a href="Myaccount.html" style="color:white;text-decoration:none;margin-left:20px;font-weight:500;">My Account</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="left">Welcome to My Account!</div>
+
+  <div class="card" id="card">
+    <div class="tabs">
+      <div class="tab active" id="tabLogin">Login</div>
+      <div class="tab" id="tabRegister">Register</div>
+    </div>
+
+    <!-- Notices -->
+    <div class="notice" id="hasAccountNotice">You're already signed in. You can still register another account below.</div>
+    <div class="error" id="msg"></div>
+
+    <!-- Login form -->
+    <form id="loginForm">
+      <label for="loginU">Username</label>
+      <input id="loginU" type="text" placeholder="Enter your username" required />
+      <label for="loginP">Password</label>
+      <input id="loginP" type="password" placeholder="Enter your password" required />
+      <button class="btn" type="submit">LOGIN</button>
+
+      <div class="muted">
+        Don't have an account? <a href="#" id="goRegister">Register now</a>
+      </div>
+
+      <div class="social">
+        <button type="button" class="sbtn apple" onclick="socialSign('Apple')"> Sign in with Apple</button>
+        <button type="button" class="sbtn google" onclick="socialSign('Google')">G Sign in with Google</button>
+        <button type="button" class="sbtn facebook" onclick="socialSign('Facebook')">f Sign in with Facebook</button>
+      </div>
+    </form>
+
+     <!-- Register form -->
+<form id="registerForm" style="display:none;">
+  <div class="register-grid">
+    <!-- Left side -->
+    <div>
+      <label for="rU">Username</label>
+      <input id="rU" type="text" placeholder="Choose a username" required />
+
+      <label for="rP">Password</label>
+      <input id="rP" type="password" placeholder="At least 8 characters" required />
+      <div class="hint">Password must be 8 or more characters.</div>
+
+      <label for="rAge">Age</label>
+      <input id="rAge" type="number" min="16" placeholder="e.g., 18" required />
+      <div class="hint">Must be a number greater than 15.</div>
+
+      <label>Gender</label>
+      <div class="gender">
+        <label><input type="radio" name="rGender" value="Male" required> Male</label>
+        <label><input type="radio" name="rGender" value="Female"> Female</label>
+        <label><input type="radio" name="rGender" value="Other"> Other</label>
+      </div>
+
+      <label>Educational Qualifications</label>
+      <div class="checks">
+        <label><input type="checkbox" value="O/L"> O/L</label>
+        <label><input type="checkbox" value="A/L"> A/L</label>
+        <label><input type="checkbox" value="Diploma"> Diploma</label>
+        <label><input type="checkbox" value="Bachelor"> Bachelor</label>
+        <label><input type="checkbox" value="Master"> Master</label>
+      </div>
+    </div>
+
+    <!-- Right side -->
+    <div>
+      <label for="rCountry">Country</label>
+      <select id="rCountry" required>
+        <option value="">-- Select country --</option>
+        <option value="Sri Lanka">Sri Lanka</option>
+        <option value="India">India</option>
+        <option value="United States">United States</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Australia">Australia</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="rPhone">Phone Number</label>
+      <input id="rPhone" type="tel" placeholder="+94761234567" required>
+
+      <label for="linkedin">LinkedIn Profile</label>
+      <input id="linkedin" type="url" placeholder="https://linkedin.com/in/yourprofile" />
+
+      <label for="gmail">Gmail</label>
+      <input id="gmail" type="email" placeholder="yourname@gmail.com" />
+
+      <label for="address">Address</label>
+      <textarea id="address" rows="3" placeholder="Your full address"></textarea>
+
+      <label for="intro">Brief Self Introduction</label>
+      <textarea id="intro" rows="4" placeholder="Tell us a little about yourself..."></textarea>
+    </div>
+  </div>
+
+  <button class="btn" type="submit">REGISTER</button>
+  <div class="muted">Already have an account? <a href="#" id="goLogin">Login</a></div>
+</form>
+
+  </div>
+
+  <div class="right">Let's Login to Your Account</div>
+</div>
+
+<footer>© 2025 Jannet Fashion. All rights reserved.</footer>
+
+<script>
+  // Floating sparkles
+  (function makeStars(n=16){
+    for(let i=0;i<n;i++){
+      const s=document.createElement('div');
+      s.className='sparkle';
+      s.style.top=Math.random()*100+'%';
+      s.style.left=Math.random()*100+'%';
+      s.style.animationDelay=(Math.random()*3)+'s';
+      document.body.appendChild(s);
+    }
+  })();
+
+  // Storage helpers
+  const LS_ACCOUNTS_KEY = 'accounts';
+  const LS_CURRENT_KEY  = 'currentUser';
+
+  function getAccounts(){
+    try{return JSON.parse(localStorage.getItem(LS_ACCOUNTS_KEY)) || [];}catch(e){return []}
+  }
+  function setAccounts(list){ localStorage.setItem(LS_ACCOUNTS_KEY, JSON.stringify(list)); }
+  function setCurrent(username){ localStorage.setItem(LS_CURRENT_KEY, username); }
+  function getCurrent(){ return localStorage.getItem(LS_CURRENT_KEY); }
+  function clearMsg(){ const m=document.getElementById('msg'); m.style.display='none'; m.textContent=''; }
+  function showMsg(t){ const m=document.getElementById('msg'); m.textContent=t; m.style.display='block'; }
+
+  // Auto-skip if already signed in (unless explicitly coming to register)
+  const urlParams = new URLSearchParams(location.search);
+  const forceRegister = urlParams.get('mode')==='register';
+  const already = getCurrent();
+  if(already && !forceRegister){
+    location.href='myaccount.html';
+  }
+
+  // Tabs
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const notice = document.getElementById('hasAccountNotice');
+
+  function showLogin(){
+    tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+    loginForm.style.display='block'; registerForm.style.display='none';
+    clearMsg(); notice.style.display='none';
+  }
+  function showRegister(){
+    tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+    loginForm.style.display='none'; registerForm.style.display='block';
+    if(getCurrent()) notice.style.display='block';
+    clearMsg();
+  }
+  tabLogin.onclick=showLogin;
+  tabRegister.onclick=showRegister;
+  document.getElementById('goRegister').onclick=(e)=>{e.preventDefault();showRegister();};
+  document.getElementById('goLogin').onclick=(e)=>{e.preventDefault();showLogin();};
+
+  if(forceRegister){ showRegister(); }
+
+  // Register validation + save
+  registerForm.addEventListener('submit', (e)=>{
+    e.preventDefault(); clearMsg();
+    const username = document.getElementById("rU").value.trim();
+    const password = document.getElementById("rP").value.trim();
+    const age = parseInt(document.getElementById("rAge").value);
+    const phone = document.getElementById('rPhone').value.trim();
+    const gender = document.querySelector('input[name="rGender"]:checked')?.value || "";
+    const country = document.getElementById("rCountry").value;
+    const linkedin = document.getElementById("linkedin").value.trim();
+    const gmail = document.getElementById("gmail").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const intro = document.getElementById("intro").value.trim();
+    const qualifications = Array.from(document.querySelectorAll(".checks input:checked"))
+        .map(input => input.value);
+
+    // Validations
+    if(!username){ return showMsg('Please enter a username.'); }
+    if(password.length < 8){ return showMsg('Password must be at least 8 characters.'); }
+    if(isNaN(age) || age <= 15){ return showMsg('Age must be a number greater than 15.'); }
+    if(!gender){ return showMsg('Please select your gender.'); }
+    if(!country){ return showMsg('Please choose your country.'); }
+
+    const accounts = getAccounts();
+    if(accounts.some(a=>a.username.toLowerCase()===username.toLowerCase())){
+      return showMsg('This username is already taken. Try another.');
+    }
+
+    const acct = {
+      username, 
+      password, 
+      age, 
+      gender, 
+      phone,
+      country,
+      qualifications,
+      linkedin,
+      gmail,
+      address,
+      intro,
+      createdAt: new Date().toISOString()
+    };
+    
+    accounts.push(acct);
+    setAccounts(accounts);
+    setCurrent(username);
+    location.href='Myaccount.html';
+  });
+
+  // Login
+  loginForm.addEventListener('submit',(e)=>{
+    e.preventDefault(); clearMsg();
+    const u=document.getElementById('loginU').value.trim();
+    const p=document.getElementById('loginP').value;
+    const accounts = getAccounts();
+    const found = accounts.find(a=>a.username.toLowerCase()===u.toLowerCase());
+    if(!found){ return showMsg('No account found with that username.'); }
+    if(found.password!==p){ return showMsg('Incorrect password.'); }
+    setCurrent(found.username);
+    location.href='myaccount.html';
+  });
+
+  // Social sign-in demo
+  function socialSign(provider) {
+    alert(`Please complete registration first. Later you can continue with ${provider}.`);
+  }
+
+  // Expose the function globally so buttons can call it
+  window.socialSign = socialSign;
+</script>
+
+</body>
+</html>
