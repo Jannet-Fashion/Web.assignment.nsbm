@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-UA-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jannet Fashion</title>
+    <link rel="icon" href="Icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        .logo {
+            background: none;
+            background-color: transparent;
+        }
+        #banner {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: white;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<section id="header">
+    <a href="#"><img src="logo.png" class="logo" alt="Jannet" height="150px" width="200px"></a>
+    <div>
+        <ul id="navbar">
+            <li><a href="index.html"><i>Explore</i></a></li>
+            <li><a href="mens.html"><i>Mens</i></a></li>
+            <li><a href="womens.html"><i>Womens</i></a></li>
+            <li><a href="new arrivals.html"><i>New Arrivals</i></a></li>
+            <li><a href="promotions.html"><i>Promotions</i></a></li>
+            <li><a href="About.html"><i>About</i></a></li>
+            <li><a href="contact.html"><i>Contact</i> <i class="fas fa-envelope"></i></a></li>
+            <li><a href="cart.html"><i class="fas fa-shopping-cart"></i></a></li>
+        </ul>
+    </div>
+</section>
+
+<section id="prodetails" class="section-p1">
+    <div class="single-pro-image">
+        <img src="Euro Coat.avif" width="100%" id="mainimg" alt="blue slim fit ripped jeans">
+       
+    </div>
+    <div class="single-pro-details">
+        <h5>Featured Product</h5>
+        <h4><font color="black">Euro Coat</font></h4>
+        <h4><font color="black">Price: <span id="total-price">Rs. 18099</span></font></h4>
+
+        <select id="size">
+            <option value="">Select size</option>
+            <option>XL</option>
+            <option>XXL</option>
+            <option>S</option>
+            <option>M</option>
+            <option>L</option>
+        </select>
+
+        <input id="quantity" type="number" value="1" min="1" onchange="updatePrice()">
+        <button class="black button2" onclick="buyNow()">Buy Now</button>
+        <button class="black" onclick="addToCart()">Add to cart</button>
+
+        <h4><font color="black">Product Details</font></h4>
+        <span>
+            <li>The Gildan Ultra Cotton T-Shirt is made from a substantial 6.0 oz. per sq yd.</li>
+            <li>Fabric constructed from 100% cotton, this classic fit preshrunk jersey knit provides unmatched comfort.</li>
+            <li>Featuring a taped neck and shoulder, a seamless double-needle collar, and available in many colors.</li>
+        </span>
+
+        <h4><font color="black">Contact Now</font></h4>
+        <a aria-label="Chat on WhatsApp" href="https://wa.me/94762242905?text=Hello%2C%20I'm%20interested%20in%20your%20services" target="_blank">
+            <img alt="Chat on WhatsApp" src="whatsapp logo.png" width="90" height="60">
+        </a>
+        <p><strong><font color="black">Address:</strong> No.77, Dematagoda Road, Colombo 09, Sri Lanka</font></p>
+        <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Hotline: 0762242905
+    </a>
+        <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Customer Service: 0762242905
+    </a>
+        <p><strong><font color="black">Work hours:</strong> 8:00 - 20:00, Monday - Friday</font></p>
+
+        <div class="follow">
+            <h4><font color="black">Follow Us on</font></h4>
+            <div class="icone">
+                <a href="https://www.instagram.com/jann.etfashion/profilecard/?igsh=MTRqYXpteGpoMXU3OQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                   
+                <a href="https://www.youtube.com/channel/UCK3xTUrU5fQ3R0TqS7qg_fg" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section id="Newsletter" class="section-p1 section-m1">
+  <div class="newstext">
+
+  </div>
+  
+</section>
+    <footer id="section-p1">
+        <div class="col">
+            <img src="logo.png" class="logo" alt="Jannet" height="150px" width="200px" background="none"
+    background-color="transparent">
+            <h4><font color="black">Contact</font></h4>
+            <p><strong><font color="black">Address:</strong> No.77, Dematagoda Road, Colombo 09 Srilanka</font></p>
+            <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Hotline: 0762242905
+    </a>
+            <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Customer Service: 0762242905
+    </a>
+            <p><strong><font color="black">Work hours:</strong> 8:00 - 20:00, Monday - friday</font></p>
+            <div class="follow">
+                <h4><font color="black">Follow Us on</font></h4>
+                <div class="icone">
+                    
+                    <a href="https://www.instagram.com/jann.etfashion/profilecard/?igsh=MTRqYXpteGpoMXU3OQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                   
+                   <a href="https://www.youtube.com/channel/UCK3xTUrU5fQ3R0TqS7qg_fg" target="_blank">
+    <i class="fab fa-youtube"></i>
+</a>
+     </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="contact.html">About Us</a>
+            <a href="contact.html">Delivery Information</a>
+            <a href="contact.html">Privacy Policy</a>
+            <a href="contact.html">Terms & Conditions</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="sign in.html">Sign In</a>
+            <a href="cart.html">View Cart</a>
+            <a href="cart.html">My Wishlist</a>
+           
+            <a href="contact.html">Help</a>
+        </div>
+
+        <div class="copyright">
+             <p><h5>© 2025, Jannet(PVT.LTD)</h5></p>
+        </div>
+    </footer>
+    <br>
+    <br>
+<script>
+    const basePrice = 9499;
+
+    function updatePrice() {
+      const quantity = parseInt(document.getElementById("quantity").value) || 1;
+      const total = basePrice * quantity;
+      document.getElementById("total-price").innerText = `Rs. ${total}`;
+    }
+
+    function addToCart() {
+      const size = document.getElementById("size").value;
+      if (!size) {
+        alert("Please select a size.");
+        return;
+      }
+
+      const quantity = parseInt(document.getElementById("quantity").value);
+      if (isNaN(quantity) || quantity < 1) {
+        alert("Please enter a valid quantity.");
+        return;
+      }
+
+      const total = basePrice * quantity;
+      const product = {
+        name: "Ladies Summer Skirt & Blouse",
+        image: "ladies summer skirt & blouse.webp",
+        price: basePrice,
+        quantity,
+        size,
+        total
+      };
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("Item added to cart!");
+      window.location.href = "cart.html";
+    }
+
+    function buyNow() {
+      const name = prompt("Enter your name:");
+      if (!name) {
+        alert("Name is required to proceed.");
+        return;
+      }
+
+      const size = document.getElementById("size").value;
+      if (!size) {
+        alert("Please select a size.");
+        return;
+      }
+
+      const quantity = parseInt(document.getElementById("quantity").value);
+      if (isNaN(quantity) || quantity < 1) {
+        alert("Please enter a valid quantity.");
+        return;
+      }
+
+      const total = basePrice * quantity;
+      const order = {
+        customerName: name,
+        product: "Ladies Summer Skirt & Blouse",
+        image: "ladies summer skirt & blouse.webp",
+        size,
+        quantity,
+        total
+      };
+
+      localStorage.setItem("currentOrder", JSON.stringify(order));
+      window.location.href = "payment.html";
+    }
+
+    window.onload = function () {
+      const savedEmail = localStorage.getItem("userEmail");
+      if (savedEmail) {
+        document.getElementById("userEmail").value = savedEmail;
+      }
+    };
+
+    function handleSignUp() {
+      const email = document.getElementById("userEmail").value;
+      if (!email || !email.includes("@")) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      localStorage.setItem("userEmail", email);
+
+      google.accounts.id.initialize({
+        client_id: "YOUR_GOOGLE_CLIENT_ID", // Replace this with actual Client ID
+        login_uri: "https://your-website.com/login",
+        callback: handleCredentialResponse,
+      });
+
+      google.accounts.id.prompt();
+    }
+
+    function handleCredentialResponse(response) {
+      console.log("Google ID Token:", response.credential);
+      alert("Sign in successful!");
+    }
+  </script>
+  <!-- Add this at the very end of your <body>, just before </body> -->
+
+<!-- Floating Admin Login Button -->
+<a href="adminlog.html" id="admin-btn" title="Admin Login">
+  <i class="fas fa-user-shield"></i>
+</a>
+
+<style>
+  /* Floating Admin Button */
+  #admin-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1907dc, #130113);
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    color: white;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+  }
+
+  #admin-btn:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+  }
+
+  #admin-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Optional pulse effect */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  #admin-btn.pulse {
+    animation: pulse 2s infinite;
+  }
+</style>
+
+<script>
+  // Optional: Add pulse effect after 2 seconds to draw attention
+  setTimeout(() => {
+    document.getElementById("admin-btn").classList.add("pulse");
+  }, 2000);
+</script>
+
+  
+</body>
+</html>
