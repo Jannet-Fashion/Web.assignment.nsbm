@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Jannet Fashion — Admin Dashboard (Full)</title>
+  <link rel="icon" href="Icon.png" type="image/x-icon" />
+<!-- Chart.js -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+     <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- jsPDF + autoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+  :root{
+    --bg1:#05111b; --panel:rgba(255,255,255,0.02);
+    --accent:#1fb6a6; --accent-2:#22c1c3;
+    --muted: rgba(255,255,255,0.75); --danger:#ff5c5c;
+    --radius:10px; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; min-height:100vh; display:flex; background:linear-gradient(180deg,#04101a,#02111b); color:#fff; }
+  .sidebar{ width:260px; padding:22px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-right:1px solid rgba(255,255,255,0.03); display:flex; flex-direction:column; gap:12px; }
+  .brand h2{ margin:0; color:var(--accent); font-size:1.25rem }
+  .brand p{ margin:6px 0 0 0; color:var(--muted); font-size:13px }
+  .nav{ margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+  .nav button{ background:transparent; border:0; color:#fff; padding:10px; text-align:left; border-radius:8px; cursor:pointer; transition:all .12s; font-size:14px; }
+  .nav button:hover{ background:rgba(255,255,255,0.02); transform:translateX(6px); }
+  .nav button.active{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#02111b; font-weight:700 }
+  .sidebar .footer{ margin-top:auto; font-size:12px; color:var(--muted) }
+
+  .main{ flex:1; padding:18px; overflow:auto; }
+  header{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+  .title h1{ margin:0; font-size:1.4rem }
+  .title p{ margin:4px 0 0; color:var(--muted); font-size:13px }
+
+  .actions{ display:flex; gap:8px; align-items:center }
+  .btn{ background:var(--accent); color:#02111b; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700 }
+  .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted) }
+
+  .layout{ display:grid; grid-template-columns: 1fr 360px; gap:16px; align-items:start }
+  .card{ background: var(--panel); border-radius:var(--radius); padding:14px; box-shadow:0 8px 30px rgba(0,0,0,0.55) }
+  .stats{ display:flex; gap:12px; margin-top:12px }
+  .stat{ background:rgba(255,255,255,0.02); padding:12px; border-radius:8px; text-align:center; min-width:110px }
+  .stat .num{ font-weight:800; font-size:1.1rem }
+  table{ width:100%; border-collapse:collapse; margin-top:12px }
+  th,td{ padding:10px 8px; border-bottom:1px solid rgba(255,255,255,0.03); text-align:left; font-size:13px; color:#fff }
+  th{ color:var(--muted); font-weight:700 }
+  .action{ background:transparent; border:1px solid rgba(255,255,255,0.04); color:#fff; padding:6px 8px; border-radius:8px; cursor:pointer; margin-right:6px; font-size:13px }
+  .action.primary{ background:var(--accent); color:#02111b; border:none; font-weight:700 }
+  .action.danger{ background:transparent; border-color:var(--danger); color:var(--danger) }
+  .note{ color:var(--muted); font-size:13px; margin-top:8px }
+  .grid-col{ display:grid; grid-template-columns: 1fr 1fr; gap:10px }
+  .form-row{ display:flex; gap:8px; margin-top:8px }
+
+  input[type="text"], input[type="number"], input[type="email"], select, textarea { width:100%; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#fff }
+  textarea{ min-height:90px; }
+  img.thumb{ width:48px; height:48px; object-fit:cover; border-radius:6px }
+
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:9999 }
+  .modal{ background:#07232b; border-radius:10px; padding:16px; width:820px; max-width:95%; box-shadow:0 8px 40px rgba(0,0,0,0.7) }
+  .modal h3{ margin:0 0 8px 0 }
+  .modal .row{ margin-top:8px }
+  .flex-end{ display:flex; justify-content:flex-end; gap:8px }
+
+  @media (max-width:980px){ .layout{ grid-template-columns: 1fr; } .sidebar{ display:none } }
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>Jannet Fashion</h2>
+      <p>Admin dashboard</p>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="active" data-tab="dashboard" onclick="showTab('dashboard', this)">Overview</button>
+      <button data-tab="products" onclick="showTab('products', this)">Products</button>
+      <button data-tab="customers" onclick="showTab('customers', this)">Customers</button>
+      <button data-tab="orders" onclick="showTab('orders', this)">Orders</button>
+      <button data-tab="carts" onclick="showTab('carts', this)">Carts</button>
+      <button data-tab="favorites" onclick="showTab('favorites', this)">Favorites</button>
+      <button data-tab="views" onclick="showTab('views', this)">Views</button>
+      <button data-tab="notifications" onclick="showTab('notifications', this)">Notifications</button>
+      <button data-tab="analytics" onclick="showTab('analytics', this)">Analytics</button>
+    </nav>
+
+    <div class="footer">
+      <div class="note">Tip: Export/Import for backups. Use the integration snippet for product pages (J001..J016).</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header>
+      <div class="title">
+        <h1>Admin Dashboard</h1>
+        <p>Manage products, customers, carts, orders, analytics and notifications</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="exportAll()">Export JSON</button>
+        <button class="btn ghost" onclick="document.getElementById('importFile').click()">Import JSON</button>
+        <input id="importFile" type="file" accept="application/json" style="display:none" onchange="importAll(event)">
+        <button class="btn ghost" onclick="clearAll()">Clear Data</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <div>
+        <!-- Overview -->
+        <div id="tab-dashboard" class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h3 style="margin:0">Overview</h3>
+              <div class="note">Snapshot and quick actions</div>
+            </div>
+            <div class="note">All data is stored in your browser (IndexedDB). Move to server later for multi-admin access.</div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="num" id="stat-products">0</div><div class="lbl">Products</div></div>
+            <div class="stat"><div class="num" id="stat-customers">0</div><div class="lbl">Customers</div></div>
+            <div class="stat"><div class="num" id="stat-orders">0</div><div class="lbl">Orders</div></div>
+            <div class="stat"><div class="num" id="stat-carts">0</div><div class="lbl">Cart Items</div></div>
+          </div>
+
+          <div style="margin-top:12px" id="overviewCards"></div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div id="tab-products" class="card" style="display:none; margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Products</h3>
+            <div>
+              <button class="action primary" onclick="openProductModal()">Add Product</button>
+              <button class="action" onclick="seedProducts()">Seed J001..J016</button>
+              <button class="action" onclick="exportSectionPDF('products')">Export Products PDF</button>
+            </div>
+          </div>
+
+          <table id="productsTable">
+            <thead><tr><th>Image</th><th>ID</th><th>Name</th><th>Size</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- CUSTOMERS -->
+        <div id="tab-customers" class="card" style="display:none; margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Customers</h3>
+            <div>
+              <button class="action primary" onclick="openCustomerModal()">Add Customer</button>
+              <button class="action" onclick="exportSectionPDF('customers')">Export Customers PDF</button>
+            </div>
+          </div>
+
+          <table id="customersTable">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="tab-orders" class="card" style="display:none; margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Orders</h3>
+            <div>
+              <button class="action" onclick="exportSectionPDF('orders')">Export Orders PDF</button>
+              <button class="action" onclick="exportCombinedPDF()">Export Combined PDF</button>
+            </div>
+          </div>
+
+          <table id="ordersTable">
+            <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Price</th><th>Dispatch</th><th>Delivery</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="note">Click Next to progress status. Update dispatch/delivery dates and notify customer.</div>
+        </div>
+
+        <!-- CARTS -->
+        <div id="tab-carts" class="card" style="display:none; margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Carts</h3>
+            <div>
+              <button class="action" onclick="exportSectionPDF('carts')">Export Carts PDF</button>
+            </div>
+          </div>
+
+          <table id="cartsTable">
+            <thead><tr><th>CartID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Added</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Favorites -->
+        <div id="tab-favorites" class="card" style="display:none; margin-top:12px">
+          <h3 style="margin:0">Favorites</h3>
+          <table id="favsTable">
+            <thead><tr><th>Customer</th><th>Product</th><th>Added</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Views -->
+        <div id="tab-views" class="card" style="display:none; margin-top:12px">
+          <h3 style="margin:0">Views</h3>
+          <table id="viewsTable">
+            <thead><tr><th>Customer</th><th>Product</th><th>Viewed</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="note">Live visitors shown in the right column and daily comparisons in Analytics.</div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="tab-notifications" class="card" style="display:none; margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Notifications</h3>
+            <div><button class="action" onclick="exportSectionPDF('notifications')">Export Notifications</button></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <input id="notifyTo" placeholder="Email (leave blank for all)" style="flex:1;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:#fff" />
+            <input id="notifyMsg" placeholder="Message" style="flex:2;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:#fff" />
+            <button class="action primary" onclick="sendNotification()">Send</button>
+          </div>
+
+          <table id="notificationsTable">
+            <thead><tr><th>To</th><th>Message</th><th>When</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Analytics -->
+        <div id="tab-analytics" class="card" style="display:none; margin-top:12px">
+          <h3 style="margin:0">Analytics</h3>
+          <div class="note">Key metrics, growth and comparisons</div>
+
+          <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+            <div style="min-width:220px" class="card"><strong>Best-selling product</strong><div id="metric-best" class="note">—</div></div>
+            <div style="min-width:220px" class="card"><strong>Most viewed product</strong><div id="metric-viewed" class="note">—</div></div>
+            <div style="min-width:220px" class="card"><strong>Most favorited</strong><div id="metric-fav" class="note">—</div></div>
+            <div style="min-width:220px" class="card"><strong>Low stock</strong><div id="metric-low" class="note">—</div></div>
+          </div>
+
+          <div style="margin-top:12px">
+            <canvas id="chartSales" style="max-height:260px"></canvas>
+          </div>
+
+          <div style="margin-top:12px">
+            <button class="action" onclick="exportSectionPDF('analytics')">Export Analytics (PDF)</button>
+          </div>
+
+          
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <aside>
+        <div class="card">
+          <h4 style="margin:0">Quick actions</h4>
+          <div style="margin-top:12px; display:flex;flex-direction:column;gap:8px">
+            <button class="action" onclick="openProductModal()">Add product</button>
+            <button class="action" onclick="seedProducts()">Seed J001..J016</button>
+            <button class="action" onclick="exportCombinedPDF()">Export combined PDF</button>
+            <button class="action" onclick="exportAll()">Download JSON backup</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4 style="margin:0">Live & Metrics</h4>
+          <div style="margin-top:10px">
+            <div class="note">Live visitors (last 5 minutes): <strong id="liveVisitors">0</strong></div>
+            <div class="note" style="margin-top:8px">Today's sales: <strong id="todaySales">0</strong></div>
+            <div class="note" style="margin-top:8px">Yesterday's sales: <strong id="yesterdaySales">0</strong></div>
+            <div style="height:12px"></div>
+            <div class="note">Download reports frequently — keep physical records.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4 style="margin:0">Integration snippet</h4>
+          <div class="note" style="margin-top:8px">Add this to product pages (J001..J016) to request product data and send interactions.</div>
+          <pre style="background:rgba(0,0,0,0.05); padding:8px; border-radius:8px; font-size:12px; color:#fff; overflow:auto; margin-top:8px">
+&lt;script&gt;
+window.addEventListener('message', ev => {
+  if(ev.origin !== window.location.origin) return;
+  if(ev.data && ev.data.type === 'JF_PRODUCT_DATA') {
+    const p = ev.data.product;
+    // update your DOM: image, price, sizes, description
+  }
+});
+// Request product info:
+window.postMessage({ type:'JF_GET_PRODUCT', id: 'p_J001' }, window.location.origin);
+
+// Send actions:
+window.postMessage({ type:'JF_ADD_TO_CART', product:{id:'p_J001'}, customer:{email:'c@example.com',name:'C'}, qty:1, special:'' }, window.location.origin);
+window.postMessage({ type:'JF_ADD_FAV', product:{id:'p_J001'}, customer:{email:'c@example.com',name:'C'} }, window.location.origin);
+window.postMessage({ type:'JF_RECORD_VIEW', product:{id:'p_J001'}, customer:{email:'c@example.com'} }, window.location.origin);
+&lt;/script&gt;
+          </pre>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal" id="modalContent" role="dialog" aria-modal="true"></div>
+  </div>
+
+<script>
+/* =========================
+   IndexedDB wrapper
+   ========================= */
+const DB_NAME = 'jannet_db_full';
+const DB_VERSION = 1;
+let dbPromise = null;
+function openDb(){
+  if(dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve,reject)=>{
+    const r = indexedDB.open(DB_NAME, DB_VERSION);
+    r.onupgradeneeded = e => {
+      const idb = e.target.result;
+      if(!idb.objectStoreNames.contains('products')){
+        const s = idb.createObjectStore('products', { keyPath:'id' });
+        s.createIndex('name','name',{unique:false});
+      }
+      if(!idb.objectStoreNames.contains('customers')) idb.createObjectStore('customers',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('orders')) idb.createObjectStore('orders',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('carts')) idb.createObjectStore('carts',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('favorites')) idb.createObjectStore('favorites',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('views')) idb.createObjectStore('views',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('notifications')) idb.createObjectStore('notifications',{keyPath:'id'});
+      if(!idb.objectStoreNames.contains('admins')) idb.createObjectStore('admins',{keyPath:'id'});
+    };
+    r.onsuccess = e => resolve(e.target.result);
+    r.onerror = e => reject(e.target.error);
+  });
+  return dbPromise;
+}
+async function idbTx(store, mode='readonly'){ const db=await openDb(); return db.transaction(store, mode).objectStore(store); }
+async function idbAdd(store, item){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); tx.oncomplete=()=>res(true); tx.onerror=()=>rej(tx.error); tx.objectStore(store).add(item); }); }
+async function idbPut(store,item){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); tx.oncomplete=()=>res(true); tx.onerror=()=>rej(tx.error); tx.objectStore(store).put(item); }); }
+async function idbGetAll(store){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readonly'); const req=tx.objectStore(store).getAll(); req.onsuccess=()=>res(req.result||[]); req.onerror=()=>rej(req.error); }); }
+async function idbGet(store,key){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readonly'); const req=tx.objectStore(store).get(key); req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error); }); }
+async function idbDelete(store,key){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); tx.oncomplete=()=>res(true); tx.onerror=()=>rej(tx.error); tx.objectStore(store).delete(key); }); }
+async function idbClear(store){ const db=await openDb(); return new Promise((res,rej)=>{ const tx=db.transaction(store,'readwrite'); tx.oncomplete=()=>res(true); tx.onerror=()=>rej(tx.error); tx.objectStore(store).clear(); }); }
+
+/* small helpers */
+function uid(pref='id'){ return pref + '_' + Math.random().toString(36).slice(2,9); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDate(ts){ return ts ? new Date(ts).toLocaleString() : ''; }
+
+/* =========================
+   Renderers & main logic
+   ========================= */
+async function renderAll(){
+  await renderStats();
+  await renderProducts();
+  await renderCustomers();
+  await renderOrders();
+  await renderCarts();
+  await renderFavorites();
+  await renderViews();
+  await renderNotifications();
+  await renderAnalytics();
+  renderOverview();
+  updateLiveVisitors();
+}
+
+/* Stats */
+async function renderStats(){
+  const [p,c,o,cart] = await Promise.all([idbGetAll('products'), idbGetAll('customers'), idbGetAll('orders'), idbGetAll('carts')]);
+  document.getElementById('stat-products').innerText = p.length;
+  document.getElementById('stat-customers').innerText = c.length;
+  document.getElementById('stat-orders').innerText = o.length;
+  document.getElementById('stat-carts').innerText = cart.length;
+}
+
+/* Products */
+async function renderProducts(){
+  const rows = await idbGetAll('products');
+  const tbody = document.querySelector('#productsTable tbody'); tbody.innerHTML = '';
+  rows.forEach(p=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.image?`<img class="thumb" src="${escapeHtml(p.image)}">`:''}</td>
+      <td>${escapeHtml(p.id)}</td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.size||'')}</td><td>${escapeHtml(p.price)}</td><td>${escapeHtml(p.stock)}</td>
+      <td><button class="action" onclick="openProductModal('${p.id}')">Edit</button><button class="action danger" onclick="deleteProduct('${p.id}')">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* Product modal */
+function openProductModal(id){
+  const modal = document.getElementById('modalBackdrop'); const content = document.getElementById('modalContent'); content.innerHTML='';
+  const isEdit = !!id;
+  content.innerHTML = `<h3>${isEdit? 'Edit' : 'Add'} product</h3>
+  <div class="grid-col">
+    <div>
+      <label>Name</label><input id="prod_name" type="text" />
+      <label style="margin-top:8px">Price</label><input id="prod_price" type="number" />
+      <label style="margin-top:8px">Stock</label><input id="prod_stock" type="number" />
+    </div>
+    <div>
+      <label>Size (comma separated)</label><input id="prod_size" type="text" />
+      <label style="margin-top:8px">Image URL</label><input id="prod_image" type="text" />
+    </div>
+  </div>
+  <label style="margin-top:8px">Description</label><textarea id="prod_desc"></textarea>
+  <div class="flex-end" style="margin-top:12px">
+    <button class="action" onclick="closeModal()">Cancel</button>
+    <button class="action primary" id="saveProdBtn">Save</button>
+  </div>`;
+  modal.style.display = 'flex';
+  if(isEdit){
+    idbGet('products', id).then(p=>{
+      if(!p) return;
+      document.getElementById('prod_name').value = p.name;
+      document.getElementById('prod_price').value = p.price;
+      document.getElementById('prod_stock').value = p.stock;
+      document.getElementById('prod_size').value = p.size;
+      document.getElementById('prod_image').value = p.image || '';
+      document.getElementById('prod_desc').value = p.desc || '';
+    });
+    document.getElementById('saveProdBtn').onclick = async ()=>{
+      const p = await idbGet('products', id);
+      p.name = document.getElementById('prod_name').value.trim();
+      p.price = Number(document.getElementById('prod_price').value||0);
+      p.stock = Number(document.getElementById('prod_stock').value||0);
+      p.size = document.getElementById('prod_size').value.trim();
+      p.image = document.getElementById('prod_image').value.trim();
+      p.desc = document.getElementById('prod_desc').value.trim();
+      await idbPut('products', p);
+      closeModal(); await renderAll(); broadcastProductUpdate(p);
+    };
+  } else {
+    document.getElementById('saveProdBtn').onclick = async ()=>{
+      const p = { id: uid('p'), name: document.getElementById('prod_name').value.trim(), price: Number(document.getElementById('prod_price').value||0), stock: Number(document.getElementById('prod_stock').value||0), size: document.getElementById('prod_size').value.trim(), image: document.getElementById('prod_image').value.trim(), desc: document.getElementById('prod_desc').value.trim() };
+      if(!p.name) return alert('Name required'); await idbAdd('products', p); closeModal(); await renderAll(); broadcastProductUpdate(p);
+    };
+  }
+}
+function closeModal(){ document.getElementById('modalBackdrop').style.display='none'; document.getElementById('modalContent').innerHTML=''; }
+async function deleteProduct(id){ if(!confirm('Delete product?')) return; await idbDelete('products', id); await renderAll(); }
+
+/* CUSTOMERS */
+async function renderCustomers(){
+  const rows = await idbGetAll('customers');
+  const tbody = document.querySelector('#customersTable tbody'); tbody.innerHTML='';
+  rows.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.email)}</td><td>${escapeHtml(c.phone||'')}</td><td><button class="action" onclick="openCustomerModal('${c.id}')">Edit</button><button class="action danger" onclick="deleteCustomer('${c.id}')">Delete</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function openCustomerModal(id){
+  const modal=document.getElementById('modalBackdrop'); const content=document.getElementById('modalContent'); content.innerHTML='';
+  const isEdit = !!id;
+  content.innerHTML = `<h3>${isEdit? 'Edit' : 'Add'} customer</h3>
+    <label>Name</label><input id="cust_name" type="text" />
+    <label style="margin-top:8px">Email</label><input id="cust_email" type="email" />
+    <label style="margin-top:8px">Phone</label><input id="cust_phone" type="text" />
+    <div class="flex-end" style="margin-top:12px"><button class="action" onclick="closeModal()">Cancel</button><button class="action primary" id="saveCustBtn">Save</button></div>`;
+  modal.style.display='flex';
+  if(isEdit){
+    idbGet('customers', id).then(c=>{ if(!c) return; document.getElementById('cust_name').value=c.name; document.getElementById('cust_email').value=c.email; document.getElementById('cust_phone').value=c.phone||'';});
+    document.getElementById('saveCustBtn').onclick = async ()=>{
+      const c = await idbGet('customers', id);
+      c.name = document.getElementById('cust_name').value.trim(); c.email = document.getElementById('cust_email').value.trim(); c.phone = document.getElementById('cust_phone').value.trim();
+      await idbPut('customers', c); closeModal(); await renderAll();
+    };
+  } else {
+    document.getElementById('saveCustBtn').onclick = async ()=>{
+      const c = { id: uid('c'), name: document.getElementById('cust_name').value.trim(), email: document.getElementById('cust_email').value.trim(), phone: document.getElementById('cust_phone').value.trim() };
+      if(!c.name || !c.email) return alert('Name and email required'); await idbAdd('customers', c); closeModal(); await renderAll();
+    };
+  }
+}
+async function deleteCustomer(id){ if(!confirm('Delete customer?')) return; await idbDelete('customers', id); await renderAll(); }
+
+/* ORDERS */
+async function renderOrders(){
+  const rows = await idbGetAll('orders'); const tbody=document.querySelector('#ordersTable tbody'); tbody.innerHTML='';
+  rows.slice().reverse().forEach(o=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${o.id}</td><td>${escapeHtml(o.customerName||o.customerEmail||o.customerId)}</td><td>${escapeHtml(o.productName)}</td><td>${escapeHtml(o.qty||1)}</td><td>${escapeHtml(o.price||0)}</td><td>${escapeHtml(formatDate(o.dispatchDate||o.dispatchAt)||'')}</td><td>${escapeHtml(formatDate(o.deliveryDate||o.deliveryAt)||'')}</td><td>${escapeHtml(o.status)}</td>
+      <td>
+        <button class="action" onclick="changeOrderStatus('${o.id}','next')">Next</button>
+        <button class="action" onclick="openOrderEdit('${o.id}')">Edit</button>
+        <button class="action danger" onclick="deleteOrder('${o.id}')">Delete</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+async function changeOrderStatus(orderId, dir='next'){
+  const o = await idbGet('orders', orderId);
+  if(!o) return alert('Order not found');
+  const FLOW=['Pending','Dispatched','Out for Delivery','Delivered'];
+  let idx = FLOW.indexOf(o.status); if(idx===-1) idx=0;
+  if(dir==='next') idx = Math.min(FLOW.length-1, idx+1);
+  if(dir==='prev') idx = Math.max(0, idx-1);
+  o.status = FLOW[idx]; o.history = o.history||[]; o.history.push({status:o.status, ts:new Date().toISOString()});
+  await idbPut('orders', o);
+  // notify customer via mailto (frontend)
+  notifyCustomerByEmail(o);
+  await renderAll();
+}
+function openOrderEdit(id){
+  const modal=document.getElementById('modalBackdrop'); const content=document.getElementById('modalContent'); modal.style.display='flex';
+  content.innerHTML = '<h3>Edit Order</h3><div id="orderEditForm"></div>';
+  idbGet('orders', id).then(o=>{
+    const html = `<label>Dispatch date & time</label><input id="ord_dispatch" type="datetime-local" value="${o.dispatchAt? new Date(o.dispatchAt).toISOString().slice(0,16):''}" />
+      <label style="margin-top:8px">Delivery date & time</label><input id="ord_delivery" type="datetime-local" value="${o.deliveryAt? new Date(o.deliveryAt).toISOString().slice(0,16):''}" />
+      <label style="margin-top:8px">Special request</label><textarea id="ord_special">${escapeHtml(o.specialRequest||'')}</textarea>
+      <div class="flex-end" style="margin-top:12px"><button class="action" onclick="closeModal()">Cancel</button><button class="action primary" onclick="saveOrderEdit('${o.id}')">Save</button></div>`;
+    document.getElementById('orderEditForm').innerHTML = html;
+  });
+}
+async function saveOrderEdit(id){
+  const o = await idbGet('orders', id); if(!o) return;
+  const disp = document.getElementById('ord_dispatch').value; const del = document.getElementById('ord_delivery').value;
+  o.dispatchAt = disp ? new Date(disp).toISOString() : o.dispatchAt; o.deliveryAt = del ? new Date(del).toISOString() : o.deliveryAt;
+  o.specialRequest = document.getElementById('ord_special').value.trim();
+  // set dispatch/delivery friendly properties
+  if(o.dispatchAt) o.dispatchDate = o.dispatchAt;
+  if(o.deliveryAt) o.deliveryDate = o.deliveryAt;
+  await idbPut('orders', o); closeModal(); await renderAll(); notifyCustomerByEmail(o);
+}
+async function deleteOrder(id){ if(!confirm('Delete order?')) return; await idbDelete('orders', id); await renderAll(); }
+
+/* CARTS */
+async function renderCarts(){
+  const rows = await idbGetAll('carts'); const tbody=document.querySelector('#cartsTable tbody'); tbody.innerHTML='';
+  rows.slice().reverse().forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${c.id}</td><td>${escapeHtml(c.customerEmail||c.customerId||'Guest')}</td><td>${escapeHtml(c.productName)}</td><td>${escapeHtml(c.qty)}</td><td>${formatDate(c.ts)}</td>
+      <td><button class="action primary" onclick="convertCartToOrder('${c.id}')">Convert</button><button class="action danger" onclick="deleteCart('${c.id}')">Remove</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+async function deleteCart(id){ if(!confirm('Remove cart item?')) return; await idbDelete('carts',id); await renderAll(); }
+async function convertCartToOrder(cartId){
+  const c = await idbGet('carts', cartId); if(!c) return alert('Cart not found');
+  const order = {
+    id: uid('o'),
+    customerId: c.customerId,
+    customerEmail: c.customerEmail,
+    customerName: c.customerName || '',
+    productId: c.productId,
+    productName: c.productName,
+    price: c.price || 0,
+    qty: c.qty || 1,
+    location: c.location || '',
+    specialRequest: c.special || '',
+    status: 'Pending',
+    history: [{status:'Pending', ts:new Date().toISOString()}],
+    ts: new Date().toISOString()
+  };
+  await idbAdd('orders', order); await idbDelete('carts', cartId); await createNotification(order.customerEmail||order.customerId, `Order ${order.id} created (Pending)`);
+  await renderAll(); notifyCustomerByEmail(order);
+}
+
+/* FAVORITES & VIEWS */
+async function renderFavorites(){ const rows = await idbGetAll('favorites'); const tbody=document.querySelector('#favsTable tbody'); tbody.innerHTML=''; rows.slice().reverse().forEach(f=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(f.customerEmail||f.customerId||'Guest')}</td><td>${escapeHtml(f.productName)}</td><td>${formatDate(f.ts)}</td><td><button class="action danger" onclick="deleteFavorite('${f.id}')">Remove</button></td>`; tbody.appendChild(tr); }); }
+async function deleteFavorite(id){ if(!confirm('Remove favorite?')) return; await idbDelete('favorites',id); await renderAll(); }
+
+async function renderViews(){ const rows = await idbGetAll('views'); const tbody=document.querySelector('#viewsTable tbody'); tbody.innerHTML=''; rows.slice().reverse().forEach(v=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(v.customerEmail||v.customerId||'Guest')}</td><td>${escapeHtml(v.productName)}</td><td>${formatDate(v.ts)}</td>`; tbody.appendChild(tr); }); }
+
+/* Notifications */
+async function renderNotifications(){ const rows=await idbGetAll('notifications'); const tbody=document.querySelector('#notificationsTable tbody'); tbody.innerHTML=''; rows.slice().reverse().forEach(n=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(n.to||n.customerId||'All')}</td><td>${escapeHtml(n.message)}</td><td>${formatDate(n.ts)}</td><td><button class="action danger" onclick="deleteNotification('${n.id}')">Delete</button></td>`; tbody.appendChild(tr); }); }
+async function createNotification(to, message){ const rec={id:uid('n'), to, message, ts:new Date().toISOString(), status:'queued'}; await idbAdd('notifications', rec); await renderAll(); return rec; }
+async function deleteNotification(id){ if(!confirm('Delete notification?')) return; await idbDelete('notifications', id); await renderAll(); }
+function sendNotification(){ const to=document.getElementById('notifyTo').value.trim(); const msg=document.getElementById('notifyMsg').value.trim(); if(!msg) return alert('Message required'); createNotification(to||'All', msg); document.getElementById('notifyTo').value=''; document.getElementById('notifyMsg').value=''; alert('Notification queued locally.'); }
+
+/* Analytics */
+let salesChart=null;
+async function renderAnalytics(){
+  const orders = await idbGetAll('orders');
+  const products = await idbGetAll('products');
+  const views = await idbGetAll('views');
+  const favs = await idbGetAll('favorites');
+
+  // best-selling
+  const sold={}; orders.forEach(o=>{ sold[o.productId]=(sold[o.productId]||0)+(o.qty||1); });
+  const bestId = Object.keys(sold).sort((a,b)=>sold[b]-sold[a])[0]||null;
+  document.getElementById('metric-best').innerText = bestId ? `${(products.find(p=>p.id===bestId)||{name:'—'}).name} (${sold[bestId]} sold)` : '—';
+
+  // most viewed
+  const vc={}; views.forEach(v=>vc[v.productId]=(vc[v.productId]||0)+1);
+  const viewedId = Object.keys(vc).sort((a,b)=>vc[b]-vc[a])[0]||null;
+  document.getElementById('metric-viewed').innerText = viewedId ? `${(products.find(p=>p.id===viewedId)||{name:'—'}).name} (${vc[viewedId]} views)` : '—';
+
+  // most favorited
+  const fc={}; favs.forEach(f=>fc[f.productId]=(fc[f.productId]||0)+1);
+  const favId = Object.keys(fc).sort((a,b)=>fc[b]-fc[a])[0]||null;
+  document.getElementById('metric-fav').innerText = favId ? `${(products.find(p=>p.id===favId)||{name:'—'}).name} (${fc[favId]} favs)` : '—';
+
+  // low stock
+  const low = products.filter(p=>Number(p.stock||0) < 5).map(p=>p.name).join(', ')||'None';
+  document.getElementById('metric-low').innerText = low;
+
+  // sales trend by day
+  const byDay={}; orders.forEach(o=>{ const d=(o.ts||o.createdAt||o.history && o.history[0] && o.history[0].ts)||new Date().toISOString(); const day=new Date(d).toISOString().slice(0,10); byDay[day]=(byDay[day]||0) + (o.price || 0)*(o.qty||1); });
+  const days = Object.keys(byDay).sort(); const values = days.map(d=>byDay[d]);
+  const ctx = document.getElementById('chartSales').getContext('2d');
+  if(salesChart) salesChart.destroy();
+  salesChart = new Chart(ctx, { type:'line', data:{ labels: days, datasets:[{ label:'Sales', data: values, borderColor:'#22c1c3', backgroundColor:'rgba(34,193,195,0.12)', fill:true }] }, options:{ responsive:true, plugins:{legend:{display:false}} } });
+
+  // today / yesterday sales
+  const today = new Date().toISOString().slice(0,10);
+  const yday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  const todaySales = (byDay[today]||0); const yesterdaySales = (byDay[yday]||0);
+  document.getElementById('todaySales').innerText = todaySales;
+  document.getElementById('yesterdaySales').innerText = yesterdaySales;
+}
+
+/* Overview */
+async function renderOverview(){
+  const recent = (await idbGetAll('orders')).slice(-6).reverse();
+  const el = document.getElementById('overviewCards');
+  if(!recent.length){ el.innerHTML = '<div class="note">No recent orders</div>'; return; }
+  el.innerHTML = recent.map(o=>`<div style="padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.03)"><strong>${escapeHtml(o.productName)}</strong><div class="note">${escapeHtml(o.customerName||o.customerEmail)} — ${escapeHtml(o.status)}</div></div>`).join('');
+}
+
+/* Export / Import / PDF */
+async function exportAll(){
+  const keys=['products','customers','orders','carts','favorites','views','notifications','admins'];
+  const payload={ exportedAt:new Date().toISOString() };
+  for(const k of keys){ payload[k] = await idbGetAll(k); }
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jannet_admin_data.json'; a.click();
+}
+async function importAll(e){
+  const f = e.target.files[0]; if(!f) return;
+  const txt = await f.text(); try{
+    const payload = JSON.parse(txt); const keys=['products','customers','orders','carts','favorites','views','notifications','admins'];
+    for(const k of keys){ await idbClear(k); if(Array.isArray(payload[k])){ for(const it of payload[k]){ try{ await idbAdd(k,it); }catch(e){ await idbPut(k,it); } } } }
+    alert('Import complete'); await renderAll();
+  }catch(err){ alert('Invalid file: '+err); }
+}
+
+async function exportSectionPDF(section){
+  const { jsPDF } = window.jspdf; const doc = new jsPDF({unit:'pt',format:'a4'}); doc.setFontSize(12); doc.text('Jannet Fashion — ' + section.toUpperCase(), 40, 40);
+  let head=[], body=[];
+  if(section==='products'){ head=['Name','Size','Price','Stock','Description']; (await idbGetAll('products')).forEach(p=>body.push([p.name,p.size,p.price,p.stock,p.desc||''])); }
+  else if(section==='customers'){ head=['Name','Email','Phone']; (await idbGetAll('customers')).forEach(c=>body.push([c.name,c.email,c.phone||''])); }
+  else if(section==='orders'){ head=['Order ID','Customer','Product','Qty','Price','Dispatch','Delivery','Status']; (await idbGetAll('orders')).forEach(o=>body.push([o.id, o.customerName||o.customerEmail, o.productName, o.qty, o.price, formatDate(o.dispatchAt)||'', formatDate(o.deliveryAt)||'', o.status])); }
+  else if(section==='carts'){ head=['Cart ID','Customer','Product','Qty','Added']; (await idbGetAll('carts')).forEach(c=>body.push([c.id, c.customerEmail||c.customerId, c.productName, c.qty, formatDate(c.ts)])); }
+  else if(section==='favorites'){ head=['Customer','Product','Added']; (await idbGetAll('favorites')).forEach(f=>body.push([f.customerEmail||f.customerId, f.productName, formatDate(f.ts)])); }
+  else if(section==='views'){ head=['Customer','Product','Viewed']; (await idbGetAll('views')).forEach(v=>body.push([v.customerEmail||v.customerId, v.productName, formatDate(v.ts)])); }
+  else if(section==='notifications'){ head=['To','Message','When']; (await idbGetAll('notifications')).forEach(n=>body.push([n.to,n.message,formatDate(n.ts)])); }
+  else if(section==='analytics'){ head=['Metric','Value']; body = [['Products', (await idbGetAll('products')).length], ['Customers', (await idbGetAll('customers')).length], ['Orders', (await idbGetAll('orders')).length]]; }
+  doc.autoTable({ head:[head], body, startY:60, styles:{fontSize:9}, headStyles:{fillColor:[14,165,164]} });
+  doc.save(`jannet_${section}.pdf`);
+}
+
+async function exportCombinedPDF(){
+  const { jsPDF } = window.jspdf; const doc = new jsPDF({unit:'pt',format:'a4'}); let y=40; doc.setFontSize(14); doc.text('Jannet Fashion — Combined Report',40,y); y+=24;
+  const sections=['orders','products','customers','carts','favorites','views','notifications'];
+  for(const sec of sections){
+    if(y>700){ doc.addPage(); y=40; }
+    doc.setFontSize(12); doc.text(sec.toUpperCase(),40,y); y+=12;
+    let head=[], body=[];
+    if(sec==='orders'){ head=['Order ID','Customer','Product','Qty','Price','Dispatch','Delivery','Status']; (await idbGetAll('orders')).forEach(o=>body.push([o.id,o.customerName||o.customerEmail,o.productName,o.qty,o.price, formatDate(o.dispatchAt)||'', formatDate(o.deliveryAt)||'', o.status])); }
+    else if(sec==='products'){ head=['Name','Size','Price','Stock']; (await idbGetAll('products')).forEach(p=>body.push([p.name,p.size,p.price,p.stock])); }
+    else if(sec==='customers'){ head=['Name','Email','Phone']; (await idbGetAll('customers')).forEach(c=>body.push([c.name,c.email,c.phone||''])); }
+    else if(sec==='carts'){ head=['Cart ID','Customer','Product','Qty']; (await idbGetAll('carts')).forEach(c=>body.push([c.id,c.customerEmail||c.customerId,c.productName,c.qty])); }
+    else if(sec==='favorites'){ head=['Customer','Product']; (await idbGetAll('favorites')).forEach(f=>body.push([f.customerEmail||f.customerId,f.productName])); }
+    else if(sec==='views'){ head=['Customer','Product']; (await idbGetAll('views')).forEach(v=>body.push([v.customerEmail||v.customerId,v.productName])); }
+    else if(sec==='notifications'){ head=['To','Message']; (await idbGetAll('notifications')).forEach(n=>body.push([n.to,n.message])); }
+    doc.autoTable({ head:[head], body, startY:y+10, styles:{fontSize:8}, headStyles:{fillColor:[14,165,164]} });
+    y = doc.lastAutoTable.finalY + 20;
+  }
+  doc.save('jannet_combined_report.pdf');
+}
+
+/* Seed J001..J016 products */
+// Initial product data from your catalog
+const initialProducts = [
+  {code:"J001", name:"Ladies summer skirt & Blouse", brand:"Jannet", price:9499, tags:"", img:"ladies summer skirt & blouse.webp"},
+  {code:"J002", name:"Summer out Frock", brand:"Jannet", price:5499, tags:"In promotions", img:"Summer out Frock.webp"},
+  {code:"J003", name:"Butterfly plazza Combo", brand:"Jannet", price:8099, tags:"Limited Offer", img:"butterfly plazza.webp"},
+  {code:"J004", name:"Hawallian printed shirts", brand:"Jannet", price:4099, tags:"", img:"Hawallian printed shirts.avif"},
+  {code:"J005", name:"Rosered Long Frock", brand:"Jannet", price:12299, tags:"Limited Offer", img:"Rosered Long Frock.avif"},
+  {code:"J006", name:"Blue Printed Shirt", brand:"Jannet", price:3999, tags:"In promotions", img:"Blue Printed Shirt.webp"},
+  {code:"J007", name:"Classic Navy Shirt", brand:"Jannet", price:3089, tags:"In promotions", img:"Classic Double Print Shirt.jpg"},
+  {code:"J008", name:"Bright Yellow knee Frock", brand:"Jannet", price:7229, tags:"", img:"Bright Yellow knee Frock.jpg"},
+  {code:"J009", name:"Blue slim fit ripped jeans", brand:"Jannet", price:7499, tags:"", img:"blue slim fit ripped jeans.webp"},
+  {code:"J010", name:"Euro Coat", brand:"Jannet", price:18099, tags:"", img:"Euro Coat.avif"},
+  {code:"J011", name:"Classic Gray Checker Shirt", brand:"Jannet", price:8099, tags:"", img:"Classic Gray Checker Shirt.webp"},
+  {code:"J012", name:"Vintage Casual Over Coats", brand:"Jannet", price:8999, tags:"", img:"vintage casual over coats.jpeg"},
+  {code:"J013", name:"Letters Printed Shirt", brand:"Jannet", price:4099, tags:"", img:"Letters Printed Shirt.webp"},
+  {code:"J014", name:"Vintage cks zzbra black Frock", brand:"Jannet", price:6999, tags:"", img:"Vintage cks zzbra black Frock.webp"},
+  {code:"J015", name:"Simple Designed Party Wear", brand:"Jannet", price:19999, tags:"", img:"Simple Designed Party Wear.jpeg"},
+  {code:"J016", name:"Blazzer", brand:"Jannet", price:9499, tags:"In promotions", img:"blazzer.jpg"}
+];
+
+// --- IndexedDB Setup ---
+let db;
+const request = indexedDB.open("AdminDB", 1);
+
+request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if(!db.objectStoreNames.contains("products")){
+    db.createObjectStore("products", { keyPath: "code" });
+  }
+};
+
+request.onsuccess = (e) => {
+  db = e.target.result;
+  loadProducts();
+};
+
+function loadProducts(){
+  const tx = db.transaction("products", "readonly");
+  const store = tx.objectStore("products");
+  const req = store.getAll();
+  req.onsuccess = () => {
+    let products = req.result;
+    if(products.length === 0){
+      // seed initial data
+      const tx2 = db.transaction("products","readwrite");
+      const store2 = tx2.objectStore("products");
+      initialProducts.forEach(p => store2.put(p));
+      tx2.oncomplete = renderProducts;
+    } else {
+      renderProducts(products);
+    }
+  };
+}
+
+function renderProducts(products){
+  const tbody = document.querySelector("#productsTable tbody");
+  tbody.innerHTML = "";
+  products.forEach(p => {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><img src="${p.img}" width="50"></td>
+      <td>${p.code}</td>
+      <td>${p.name}</td>
+      <td>${p.brand}</td>
+      <td>${p.price}</td>
+      <td>${p.tags||""}</td>
+      <td>
+        <button class="btn small edit" onclick="editProduct('${p.code}')">Edit</button>
+        <button class="btn small delete" onclick="deleteProduct('${p.code}')">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Search
+document.getElementById("productSearch").addEventListener("input", (e) => {
+  const filter = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll("#productsTable tbody tr");
+  rows.forEach(r => {
+    const text = r.innerText.toLowerCase();
+    r.style.display = text.includes(filter) ? "" : "none";
+  });
+});
+
+// Edit & Delete functions
+function editProduct(code){
+  const tx = db.transaction("products","readonly");
+  const store = tx.objectStore("products");
+  const req = store.get(code);
+  req.onsuccess = () => {
+    const p = req.result;
+    document.getElementById("productId").value = p.code;
+    document.getElementById("productCode").value = p.code;
+    document.getElementById("productName").value = p.name;
+    document.getElementById("productBrand").value = p.brand;
+    document.getElementById("productPrice").value = p.price;
+    document.getElementById("productTags").value = p.tags;
+    document.getElementById("imagePreview").innerHTML = `<img src="${p.img}" width="80">`;
+    document.getElementById("productModal").classList.remove("hidden");
+  };
+}
+
+function deleteProduct(code){
+  const tx = db.transaction("products","readwrite");
+  tx.objectStore("products").delete(code);
+  tx.oncomplete = loadProducts;
+}
+
+// Save form
+document.getElementById("productForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  let p = {
+    code: document.getElementById("productCode").value,
+    name: document.getElementById("productName").value,
+    brand: document.getElementById("productBrand").value,
+    price: parseInt(document.getElementById("productPrice").value),
+    tags: document.getElementById("productTags").value,
+    img: document.getElementById("imagePreview").querySelector("img")?.src || ""
+  };
+  const tx = db.transaction("products","readwrite");
+  tx.objectStore("products").put(p);
+  tx.oncomplete = () => {
+    document.getElementById("productModal").classList.add("hidden");
+    loadProducts();
+  };
+});
+
+// Image upload preview
+document.getElementById("productImage").addEventListener("change",(e)=>{
+  const file = e.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById("imagePreview").innerHTML = `<img src="${reader.result}" width="80">`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Add product
+document.getElementById("addProductBtn").addEventListener("click", ()=>{
+  document.getElementById("modalTitle").innerText = "Add Product";
+  document.getElementById("productForm").reset();
+  document.getElementById("imagePreview").innerHTML = "";
+  document.getElementById("productModal").classList.remove("hidden");
+});
+
+// Close modal
+document.getElementById("closeModal").addEventListener("click", ()=>{
+  document.getElementById("productModal").classList.add("hidden");
+});
+
+/* Import messages from product pages via postMessage */
+window.addEventListener('message', async (ev)=>{
+  if(ev.origin !== window.location.origin) return;
+  const m = ev.data || {};
+  if(m.type === 'JF_GET_PRODUCT' && m.id){
+    const p = await idbGet('products', m.id);
+    ev.source.postMessage({ type:'JF_PRODUCT_DATA', product: p || null }, ev.origin);
+  }
+  if(m.type === 'JF_ADD_TO_CART' && m.product){
+    const prod = await idbGet('products', m.product.id);
+    if(!prod) return ev.source.postMessage({ type:'JF_ERROR', message:'product not found' }, ev.origin);
+    const customerId = await ensureCustomerFromMessage(m.customer);
+    const rec = { id: uid('cart'), customerId, customerEmail: (m.customer && m.customer.email) || null, productId: prod.id, productName: prod.name, qty: m.qty || 1, price: prod.price || 0, ts: new Date().toISOString(), special: m.special||'' };
+    await idbAdd('carts', rec); ev.source.postMessage({ type:'JF_CART_ADDED', cart: rec }, ev.origin); await renderAll();
+  }
+  if(m.type === 'JF_ADD_FAV' && m.product){
+    const prod = await idbGet('products', m.product.id); if(!prod) return;
+    const customerId = await ensureCustomerFromMessage(m.customer);
+    const rec = { id: uid('f'), customerId, customerEmail:(m.customer && m.customer.email)||null, productId: prod.id, productName: prod.name, ts: new Date().toISOString() };
+    await idbAdd('favorites', rec); ev.source.postMessage({ type:'JF_FAV_ADDED', fav: rec }, ev.origin); await renderAll();
+  }
+  if(m.type === 'JF_RECORD_VIEW' && m.product){
+    const prod = await idbGet('products', m.product.id); if(!prod) return;
+    const customerId = await ensureCustomerFromMessage(m.customer);
+    const rec = { id: uid('v'), customerId, customerEmail:(m.customer && m.customer.email)||null, productId: prod.id, productName: prod.name, ts: new Date().toISOString() };
+    await idbAdd('views', rec); await renderAll();
+  }
+});
+
+/* ensure customer for incoming messages */
+async function ensureCustomerFromMessage(customer){
+  if(!customer) return null;
+  const email = typeof customer === 'string' ? customer : (customer.email || null);
+  const name = typeof customer === 'object' ? (customer.name || '') : '';
+  if(!email) return null;
+  const list = await idbGetAll('customers');
+  const found = list.find(c => c.email === email);
+  if(found) return found.id;
+  const c = { id: uid('c'), name: name||email, email, phone: (customer && customer.phone) || '' };
+  await idbAdd('customers', c); return c.id;
+}
+
+/* Broadcast product updates (postMessage) */
+function broadcastProductUpdate(p){
+  try { window.postMessage({ type:'JF_PRODUCT_UPDATED', product: p }, window.location.origin); } catch(e){}
+}
+
+/* Notifications by email (mailto) - builds a nicely formatted message */
+function notifyCustomerByEmail(order){
+  const to = order.customerEmail || '';
+  if(!to) return;
+  const subject = encodeURIComponent(`Order Update - ${order.id} (${order.status})`);
+  let body = `Hello ${order.customerName || ''},%0D%0A%0D%0A`;
+  body += `Thank you for your order. Here are the details:%0D%0A`;
+  body += `Order ID: ${order.id}%0D%0AProduct: ${order.productName}%0D%0AQty: ${order.qty}%0D%0APrice: ${order.price}%0D%0A`;
+  if(order.dispatchAt) body += `Dispatch: ${new Date(order.dispatchAt).toLocaleString()}%0D%0A`;
+  if(order.deliveryAt) body += `Estimated delivery: ${new Date(order.deliveryAt).toLocaleString()}%0D%0A`;
+  body += `%0D%0AStatus: ${order.status}%0D%0A%0D%0A`;
+  body += `If you need to change anything, reply to this message.%0D%0A%0D%0AThanks,%0D%0AJannet Fashion Admin`;
+  const mailto = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${body}`;
+  // open mail client (frontend-only)
+  window.open(mailto, '_blank');
+}
+
+/* create notification record */
+async function createNotification(to, message){ const rec={id:uid('n'), to, message, ts: new Date().toISOString(), status:'queued'}; await idbAdd('notifications', rec); await renderAll(); return rec; }
+
+/* Live visitors: based on views in last 5 minutes */
+async function updateLiveVisitors(){
+  const views = await idbGetAll('views'); const cutoff = Date.now() - (5*60*1000);
+  const recent = views.filter(v => new Date(v.ts).getTime() >= cutoff);
+  const unique = new Set(recent.map(r => r.customerEmail || r.customerId || r.id));
+  document.getElementById('liveVisitors').innerText = unique.size;
+  // schedule next update in 30 seconds
+  setTimeout(updateLiveVisitors, 30000);
+}
+
+/* PDF helpers reuse above functions */
+
+/* Clear all data */
+async function clearAll(){ if(!confirm('Clear all data? This will delete all local records.')) return; const keys=['products','customers','orders','carts','favorites','views','notifications','admins']; for(const k of keys) await idbClear(k); alert('All data cleared'); await renderAll(); }
+
+/* small boot */
+renderAll();
+
+/* expose some functions in console if needed */
+window.jf = { dbOpen: openDb, renderAll };
+
+/* initial display tab control */
+function showTab(tab, btn){ ['dashboard','products','customers','orders','carts','favorites','views','notifications','analytics'].forEach(t=>{ const el=document.getElementById('tab-'+t); if(el) el.style.display = (t===tab)?'block':'none'; }); document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
+
+/* Utilities used earlier but declared later for order of functions */
+async function renderAll(){ await renderStats(); await renderProducts(); await renderCustomers(); await renderOrders(); await renderCarts(); await renderFavorites(); await renderViews(); await renderNotifications(); await renderAnalytics(); renderOverview(); updateLiveVisitors(); }
+
+</script>
+<!-- Add this at the very end of your <body>, just before </body> -->
+
+<!-- Floating Admin Login Button -->
+<a href="index.html" id="admin-btn" title="index Login">
+  <i class="fas fa-user-shield"></i>
+</a>
+
+<style>
+  /* Floating Admin Button */
+  #admin-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1907dc, #130113);
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    color: white;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+  }
+
+  #admin-btn:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+  }
+
+  #admin-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Optional pulse effect */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  #admin-btn.pulse {
+    animation: pulse 2s infinite;
+  }
+</style>
+
+<script>
+  // Optional: Add pulse effect after 2 seconds to draw attention
+  setTimeout(() => {
+    document.getElementById("admin-btn").classList.add("pulse");
+  }, 2000);
+</script>
+</body>
+</html>
