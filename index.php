@@ -1,0 +1,644 @@
+<?php
+require_once __DIR__ . '/includes/bootstrap.php';
+?><!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="x-UA-compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Jannet Fashion</title>
+  <link rel="icon" href="Images/Icon.png" type="image/x-icon" sizes="height='32px' width='32px'">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+     <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+ 
+
+     
+    <section id="header">
+  <a href="#"><img src="Images/logo.png" class="logo" alt="Jannet" height="150px" width="200px" background="none"
+    background-color="transparent"></a>
+
+<style>
+/* ========== DEFAULT DESKTOP / PC VIEW (width > 768px) ========== */
+
+.logo {
+  background: none;
+  background-color: transparent;
+  max-width: 200px; /* Adjust as needed */
+  height: auto;
+}
+
+#banner {
+  background-image: url('Images/bg.jpg'); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  color: white;
+  position: relative;
+}
+
+
+/* ========== MOBILE VIEW (width <= 768px) ========== */
+@media (max-width: 768px) {
+  .logo {
+    max-width: 150px; /* Smaller on mobile */
+    margin: 0 auto;
+    display: block;
+  }
+
+  #banner {
+    height: auto;
+    padding: 40px 10px;
+    text-align: center;
+  }
+
+  #banner h1, #banner h2, #banner p {
+    font-size: 90%; /* Slightly smaller text on mobile */
+  }
+}
+
+/* ========== EXTRA SMALL DEVICES (width <= 480px) ========== */
+@media (max-width: 480px) {
+  .logo {
+    max-width: 120px;
+  }
+
+  #banner {
+    padding: 30px 10px;
+  }
+
+  #banner h1 {
+    font-size: 20px;
+  }
+
+  #banner p {
+    font-size: 14px;
+  }
+}
+
+
+</style>
+
+
+        <div>
+            <ul id="navbar">
+                <li><a class="active" href="index.php"><i>Explore</i></a></li>
+                <li><a href="mens.php"><i>Mens</i></a></li>
+                <li><a href="womens.php"><i>Womens</i></a></li>
+               
+                <li><a href="new arrivals.php"><i>New Arrivals</i></a></li>
+                <li><a href="Promotions.php"><i>Promotions</i></a></li>
+                
+                <li><a href="contact.php"> <i>Contact</i></a></li>
+                <li><a href="cart.php">Cart</a></li>
+                <li><a href="sign in.php"><i>Sign In</i></a></li>
+            </ul>
+        </div>
+    </section> 
+
+   <section id="hero">
+  <video autoplay muted loop playsinline id="hero-video" class="into">
+    <source src="Videos/jannet home.mp4" class="intro">
+       <font color="black">Your browser does not support the video tag.</font>
+    </video>
+
+    <div class="hero-content">
+        <h4><font color="white">Trade-in-Offer</font></h4>
+        <h2><font color="white">super value deals</font></h2>
+        <h1><font color="white">On all products</font></h1>
+        <p><font color="white">save more with coupons & up-to 70% Off</font></p>
+        <a href="https://youtu.be/PHuWdDZJkLo" target="_blank">
+  <button>View Video</button>
+</a>
+  </div>
+</section>
+
+    
+  <style>
+
+   /* =============== DEFAULT STYLES FOR DESKTOP/PC =============== */
+
+.intro {
+  width: 50%;
+  height: auto;
+}
+
+#hero {
+  position: relative;
+  height: 40vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 50px;
+  color: white;
+}
+
+#hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  top: 90px;
+  left: -500px;
+}
+
+#hero button {
+  width: 130px;
+  height: 35px;
+  margin-top: 10px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn__icon-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn__icon {
+  color: var(--light-icon-color);
+  font-size: 1.5rem;
+}
+
+body {
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+:root {
+  --dark-color: #2b2b2b;
+  --dark-icon-color: white;
+  --light-color: white;
+  --light-icon-color: #FFDE59;
+  --text-color: #000000;
+  --bg-color: #ffffff;
+}
+
+.container {
+  text-align: center;
+  padding: 50px;
+}
+
+.btn {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 10em;
+  box-shadow: inset 0 8px 60px rgba(0, 0, 0, 0.1),
+              inset 0 8px 8px rgba(0, 0, 0, 0.1),
+              inset 0 -4px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.btn__indicator {
+  background-color: white;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+/* =============== RESPONSIVE FOR MOBILE VIEW =============== */
+@media (max-width: 768px) {
+  .intro {
+    width: 90%;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  #hero {
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+    height: 60vh;
+  }
+
+  .hero-content {
+    top: 0;
+    left: 0;
+    padding: 20px;
+    text-align: center;
+  }
+
+  #hero button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+}
+
+/* =============== EXTRA SMALL DEVICES =============== */
+@media (max-width: 480px) {
+  #hero {
+    height: 70vh;
+    padding-left: 10px;
+  }
+
+  .hero-content {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .btn {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .btn__icon {
+    font-size: 1.2rem;
+  }
+
+  .btn__indicator {
+    width: 2em;
+    height: 2em;
+  }
+}
+
+</style>
+
+  <script>
+ 
+    function signIn(provider) {
+      alert(`Signing in with ${provider}... (This is a placeholder)`);
+    }
+  </script>
+ 
+    <section id="feature" class="section-p1 ">
+        <div class="fe-box">
+            <img src="Images/free shipping.png" alt="" width="150px" height="150px">
+            <h6>Free Shipping</h6>
+        </div>
+        <div class="fe-box">
+            <img src="Images/super deals.png" alt="" width="150px" height="150px">
+            <h6>Supper Deals</h6>
+        </div>
+        <div class="fe-box">
+            <img src="Images/Promotions.png" alt="" width="150px" height="150px">
+            <h6>Promotions</h6>
+        </div>
+        <div class="fe-box">
+            <img src="Images/winter bundle.png" alt="" width="150px" height="150px">
+            <h6>Bundle Deals</h6>
+        </div>
+        <div class="fe-box">
+            <img src="Images/top trends.png" alt="" width="150px" height="150px">
+            <h6>Top Trends</h6>
+        </div>
+        <div class="fe-box">
+            <img src="Images/big save.png" alt="" width="150px" height="150px">
+            <h6>Big Save</h6>
+        </div>
+        
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2><font color="black">Featured Products</font></h2>
+        <p><font color="black">Summer Collection New Modern Design</font></p>
+        <div class="pro-container">
+            <div class="pro" onclick="window.location.href='J001.php';">
+           
+            <img src="Images/ladies summer skirt & blouse.webp" alt="ladies summer skirt & blouse">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Ladies summer skirt & Blouse</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.9499</h4>
+            </div>
+            <a href="J001.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+           <div class="pro" onclick="window.location.href='J002.php';">
+                    <img src="Images/Summer out Frock.webp" alt="Summer out Frock">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Summer out Frock</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.5499<font color="Navy">&nbsp;&nbsp;&nbsp;In promotions</font></h4>
+                
+            </div>
+            <a href="J002.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            <div class="pro" onclick="window.location.href='J003.php';">
+          
+                <img src="Images/butterfly plazza.webp" alt="butterfly plazza">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Butterfly plazza Combo</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.8099</h4><h5><font color="Olive">(Limitted Offer)</font></h5>
+            </div>
+            
+            <a href="J003.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+              <div class="pro" onclick="window.location.href='J004.php';">
+            <img src="Images/Hawallian printed shirts.avif" alt="Hawallian printed shirts">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Hawallian printed shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.4099</h4>
+            </div>
+            
+            <a href="J004.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            
+            
+          
+    </section>
+
+    <section id="banner" class="section-m1">
+        <h4>Big Save</h4>
+        <h2>Up to <span>50% off</span> - All Mens & Ladies Wears</h2>
+  <a href="Promotions.php" style="padding: 10px 20px; background-color: #f5f6f7; color: rgb(5, 5, 5); text-decoration: none; border-radius: 5px;">Explore more</a>
+  </section>
+
+    
+    <section id="product1" class="section-m1">
+        <h2><font color="black">#NewTrends</font></h2>
+        <p><font color="black">Summer Collection New Modern Design</font></p>
+        <div class="pro-container">
+           <div class="pro" onclick="window.location.href='J005.php';">
+            <img src="Images/Rosered Long Frock.avif" alt="Rosered Long Frock">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Rosered Long Frock</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.12299<h5><font color="Olive">(Limitted Offer)</font></h5></h4>
+            </div>
+            <a href="J005.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+           <div class="pro" onclick="window.location.href='J006.php';">
+      
+                <img src="Images/Blue Printed Shirt.webp" alt="Blue Printed Shirt">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Blue Printed Shirt</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.3999<font color="Navy">&nbsp;&nbsp;&nbsp;In promotions</font></h4>
+            </div>
+            <a href="J006.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            <div class="pro" onclick="window.location.href='J007.php';">
+          <img src="Images/Classic Double Print Shirt.jpg" alt="Classic Double Print Shirt">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Classic Navy  Shirt</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.3089<font color="Navy">&nbsp;&nbsp;&nbsp;In promotions</font></h4>
+            </div>
+            <a href="J007.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            <div class="pro" onclick="window.location.href='J008.php';">
+           <img src="Images/Bright Yellow knee Frock.jpg" alt="Bright Yellow knee Frock">
+                <div class="des">
+                    <span>Jannet</span>
+                    <h5>Bright Yellow knee Frock</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                </div>
+                <h4>Rs.7229</h4>
+            </div>
+            <a href="J008.html"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            
+        </div>
+    </section>
+
+  
+<section id="Newsletter" class="section-p1 section-m1">
+  <div class="newstext">
+
+  </div>
+  
+</section>
+    <footer id="section-p1">
+        <div class="col">
+            <img src="Images/logo.png" class="logo" alt="Jannet" height="150px" width="200px" background="none"
+    background-color="transparent">
+            <h4><font color="black">Contact</font></h4>
+            <p><strong><font color="black">Address:</strong> No.77, Dematagoda Road, Colombo 09 Srilanka</font></p>
+            <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Hotline: 0762242905
+    </a>
+            <a href="tel:0762242905" style="color: black; text-decoration: none;">
+      Customer Service: 0762242905
+    </a>
+            <p><strong><font color="black">Work hours:</strong> 8:00 - 20:00, Monday - friday</font></p>
+            <div class="follow">
+                <h4><font color="black">Follow Us on</font></h4>
+                <div class="icone">
+                    
+                    <a href="https://www.instagram.com/jann.etfashion/profilecard/?igsh=MTRqYXpteGpoMXU3OQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                   
+                   <a href="https://www.youtube.com/channel/UCK3xTUrU5fQ3R0TqS7qg_fg" target="_blank">
+    <i class="fab fa-youtube"></i>
+</a>
+     </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="contact.html">About Us</a>
+            <a href="contact.html">Delivery Information</a>
+            <a href="contact.html">Privacy Policy</a>
+            <a href="contact.html">Terms & Conditions</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="sign in.html">Sign In</a>
+            <a href="cart.html">View Cart</a>
+            <a href="cart.html">My Wishlist</a>
+           
+            <a href="contact.html">Help</a>
+        </div>
+
+        <div class="copyright">
+             <p><h5>© 2025, Jannet(PVT.LTD)</h5></p>
+        </div>
+    </footer>
+    <br>
+    <br>
+
+       
+<script>
+  // On page load, prefill email if stored
+  window.onload = function () {
+    const savedEmail = localStorage.getItem("userEmail");
+    if (savedEmail) {
+      document.getElementById("userEmail").value = savedEmail;
+    }
+  };
+
+  // Store email on button click
+  function handleSignUp() {
+    const email = document.getElementById("userEmail").value;
+    if (!email || !email.includes("@")) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    localStorage.setItem("userEmail", email);
+
+    // Show Google Sign-In popup
+    google.accounts.id.initialize({
+      client_id: "YOUR_GOOGLE_CLIENT_ID",
+      login_uri: "https://your-website.com/login", // replace with your URL
+      callback: handleCredentialResponse,
+    });
+
+    google.accounts.id.prompt(); // triggers Google Sign-In popup
+  }
+
+  function handleCredentialResponse(response) {
+    // This is where you handle login response
+    console.log("Google ID Token:", response.credential);
+
+    // Example: Redirect or show welcome message
+    alert("Sign in successful!");
+  }
+</script>
+<!-- Add this at the very end of your <body>, just before </body> -->
+
+<!-- Floating Admin Login Button -->
+<a href="adminlog.php" id="admin-btn" title="Admin Login">
+  <i class="fas fa-user-shield"></i>
+</a>
+
+<style>
+  /* Floating Admin Button */
+  #admin-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1907dc, #130113);
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    color: white;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+  }
+
+  #admin-btn:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+  }
+
+  #admin-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Optional pulse effect */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  #admin-btn.pulse {
+    animation: pulse 2s infinite;
+  }
+</style>
+
+<script>
+  // Optional: Add pulse effect after 2 seconds to draw attention
+  setTimeout(() => {
+    document.getElementById("admin-btn").classList.add("pulse");
+  }, 2000);
+</script>
+
+    </body>
+</html>
